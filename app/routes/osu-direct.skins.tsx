@@ -65,7 +65,7 @@ export async function action({ request, context }: Route.ActionArgs) {
     }
 
     await reorderSkins(db, orderedIds);
-    return { success: true, message: "Ordre mis à jour !" };
+    return { success: true, message: "Ordre mis à jour\u00A0!" };
   }
 
   if (intent === "delete") {
@@ -77,7 +77,7 @@ export async function action({ request, context }: Route.ActionArgs) {
       if (skin.skin_file_key) await deleteFile(bucket, skin.skin_file_key);
     }
     await deleteSkin(db, skinId);
-    return { success: true, message: "Skin supprimé !" };
+    return { success: true, message: "Skin supprimé\u00A0!" };
   }
 
   return { success: false, message: "Action inconnue" };
@@ -152,7 +152,7 @@ function SortableItem({
             className="btn-danger btn-small"
             disabled={fetcher.state !== "idle"}
             onClick={(e) => {
-              if (!confirm(`Supprimer "${skin.name}" ?`)) {
+              if (!confirm(`Supprimer "${skin.name}"\u00A0?`)) {
                 e.preventDefault();
               }
             }}

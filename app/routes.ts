@@ -10,6 +10,7 @@ export default [
   index("routes/home.tsx"),
   route("api/image/:id", "routes/api.image.tsx"),
   route("api/download/:id", "routes/api.download.tsx"),
+  route("api/download-all", "routes/api.download-all.tsx"),
 
   // Admin routes under /osu-direct
   layout("routes/osu-direct.tsx", [

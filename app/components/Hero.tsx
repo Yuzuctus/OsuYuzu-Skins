@@ -76,6 +76,9 @@ export function Hero({ character }: HeroProps) {
             <a href="#skins-container" className="btn-primary">
               <i className="fas fa-layer-group"></i> Mes Skins
             </a>
+            <a href="/api/download-all" className="btn-primary">
+              <i className="fas fa-file-archive"></i> Tout télécharger (.zip)
+            </a>
             <a href="#footer" className="btn-secondary">
               <i className="fab fa-github"></i> Contact
             </a>

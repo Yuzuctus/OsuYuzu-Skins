@@ -6,7 +6,7 @@ export function Footer() {
           <h3>Osu!Yuzu</h3>
           <p>
             Ma collection personnelle de skins Osu! que j'utilise quand je joue.
-            Tous les crédits vont aux créateurs originaux !
+            Tous les crédits vont aux créateurs originaux{"\u00A0!"}
           </p>
         </div>
         <div className="footer-links">

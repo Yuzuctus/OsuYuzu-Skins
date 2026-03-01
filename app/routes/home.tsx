@@ -14,7 +14,7 @@ export function meta({}: Route.MetaArgs) {
     {
       name: "description",
       content:
-        "Découvre les skins Osu! que j'utilise quand je joue ! Collection personnelle de Yuzuctus avec téléchargements gratuits.",
+        "Découvre les skins Osu! que j'utilise quand je joue\u00A0! Collection personnelle de Yuzuctus avec téléchargements gratuits.",
     },
     {
       name: "keywords",
@@ -29,7 +29,7 @@ export function meta({}: Route.MetaArgs) {
     {
       property: "og:description",
       content:
-        "Découvre les skins Osu! que j'utilise personnellement quand je joue. Téléchargement gratuit !",
+        "Découvre les skins Osu! que j'utilise personnellement quand je joue. Téléchargement gratuit\u00A0!",
     },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://skins.yuzuctus.fr/" },

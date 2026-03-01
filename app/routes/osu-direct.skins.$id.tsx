@@ -182,7 +182,7 @@ export default function EditSkin({
   return (
     <>
       <div className="admin-page-header">
-        <h1>Modifier : {skin.name}</h1>
+        <h1>Modifier\u00A0: {skin.name}</h1>
         <Link to="/osu-direct/skins" className="btn-secondary">
           <i className="fas fa-arrow-left"></i> Retour
         </Link>

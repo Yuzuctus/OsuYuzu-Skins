@@ -30,20 +30,20 @@ export async function action({ request, context }: Route.ActionArgs) {
     } catch {
       return { error: "Un tag avec ce nom existe déjà." };
     }
-    return { success: true, message: `Tag "${name}" créé !` };
+    return { success: true, message: `Tag "${name}" créé\u00A0!` };
   }
 
   if (intent === "update") {
     const tagId = formData.get("tagId") as string;
     const color = formData.get("color") as string;
     await updateTag(db, tagId, { color });
-    return { success: true, message: "Couleur mise à jour !" };
+    return { success: true, message: "Couleur mise à jour\u00A0!" };
   }
 
   if (intent === "delete") {
     const tagId = formData.get("tagId") as string;
     await deleteTag(db, tagId);
-    return { success: true, message: "Tag supprimé !" };
+    return { success: true, message: "Tag supprimé\u00A0!" };
   }
 
   return { error: "Action inconnue" };
@@ -154,7 +154,7 @@ export default function TagsAdmin({
                 type="submit"
                 className="btn-danger btn-small"
                 onClick={(e) => {
-                  if (!confirm(`Supprimer le tag "${tag.name}" ?`)) {
+                  if (!confirm(`Supprimer le tag "${tag.name}"\u00A0?`)) {
                     e.preventDefault();
                   }
                 }}
@@ -174,7 +174,7 @@ export default function TagsAdmin({
             padding: "2rem 0",
           }}
         >
-          Aucun tag créé. Ajoutez-en un ci-dessus !
+          Aucun tag créé. Ajoutez-en un ci-dessus\u00A0!
         </p>
       )}
     </>

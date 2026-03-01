@@ -187,7 +187,7 @@ export default function NewSkin({
             name="name"
             required
             autoFocus
-            placeholder="ex: XooMoon - Blue trail Updated"
+            placeholder="ex\u00A0: XooMoon - Blue trail Updated"
           />
         </div>
 
