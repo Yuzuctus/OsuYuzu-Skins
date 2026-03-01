@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "yuzu-skins",
+  "compatibility_date": "2025-04-04",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "./workers/app.ts",
+  // D1 Database binding
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "osu-yuzu-skins-db",
+      "database_id": "75bdac02-6a50-4561-8c76-53f02cc12291",
+    },
+  ],
+  // R2 Storage binding
+  "r2_buckets": [
+    {
+      "binding": "R2_BUCKET",
+      "bucket_name": "osu-yuzu-skins-storage",
+    },
+  ],
+  "vars": {
+    "SESSION_SECRET": "change-me-in-production",
+  },
+}

@@ -1,36 +1,79 @@
-# Osu!Yuzu Skins
+# Welcome to React Router!
 
-[![Website](https://img.shields.io/website?url=https%3A%2F%2Fosu-yuzu-skins.vercel.app&style=for-the-badge&logo=vercel&logoColor=white&label=website&labelColor=black&color=blue)](https://osu-yuzu-skins.vercel.app/)
-
-A web gallery for viewing and downloading Osu! skins used by Yuzuctus. Visit the live site at [https://osu-yuzu-skins.vercel.app/](https://osu-yuzu-skins.vercel.app/).
-
-## About the Site
-
-Osu!Yuzu Skins is a dedicated platform that allows users to:
-
-- Browse a curated collection of high-quality Osu! skins used by Yuzuctus
-- Preview each skin with high-quality images
-- Download skins directly through Google Drive links
-- Access original forum posts for skins (when available)
-
-The site features a clean, responsive design that works well on both desktop and mobile devices.
+A modern, production-ready template for building full-stack React applications using React Router.
 
 ## Features
 
-- **Modern UI**: Clean and intuitive interface with smooth animations
-- **Modal Previews**: Click on any skin to open a larger preview
-- **Downloads with google drive**: Easy access to download links for all skins
-- **Responsive Design**: Adapts to any screen size
+- 🚀 Server-side rendering
+- ⚡️ Hot Module Replacement (HMR)
+- 📦 Asset bundling and optimization
+- 🔄 Data loading and mutations
+- 🔒 TypeScript by default
+- 🎉 TailwindCSS for styling
+- 📖 [React Router docs](https://reactrouter.com/)
 
-The site also provides links to various Osu! skin resources:
+## Getting Started
 
-- Official Osu! Forum
-- Compendium Skinship
-- Osuck Skins
-- OsuSkins.net
-- Reddit communities
-- And more related projects like the OsuRea Area visualizer
+### Installation
 
-## Collection
+Install the dependencies:
 
-The collection includes a variety of carefully selected skins with different styles and designs to enhance your Osu! gaming experience.
+```bash
+npm install
+```
+
+### Development
+
+Start the development server with HMR:
+
+```bash
+npm run dev
+```
+
+Your application will be available at `http://localhost:5173`.
+
+## Previewing the Production Build
+
+Preview the production build locally:
+
+```bash
+npm run preview
+```
+
+## Building for Production
+
+Create a production build:
+
+```bash
+npm run build
+```
+
+## Deployment
+
+Deployment is done using the Wrangler CLI.
+
+To build and deploy directly to production:
+
+```sh
+npm run deploy
+```
+
+To deploy a preview URL:
+
+```sh
+npx wrangler versions upload
+```
+
+You can then promote a version to production after verification or roll it out progressively.
+
+```sh
+npx wrangler versions deploy
+```
+
+## Styling
+
+This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+
+---
+
+Built with ❤️ using React Router.
