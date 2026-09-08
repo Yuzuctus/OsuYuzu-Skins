@@ -13,6 +13,7 @@ export default [
   route("api/download-all", "routes/api.download-all.tsx"),
   route("api/download-manifest", "routes/api.download-manifest.tsx"),
   route("api/admin/bundle", "routes/api.admin.bundle.tsx"),
+  route("api/admin/bundle-upload", "routes/api.admin.bundle-upload.tsx"),
 
   // Admin routes under /osu-direct
   layout("routes/osu-direct.tsx", [

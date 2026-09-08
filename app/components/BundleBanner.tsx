@@ -22,7 +22,18 @@ type Phase =
   | { name: "idle" }
   | { name: "fetch"; done: number; total: number }
   | { name: "zip"; percent: number }
-  | { name: "upload" };
+  | { name: "upload"; doneParts: number; totalParts: number; doneMB: number };
+
+/** One HTTP request = one R2 part. Stays far below the ~100 Mo proxy cap. */
+const UPLOAD_CHUNK_BYTES = 8 * 1024 * 1024;
+const PART_MAX_RETRIES = 3;
+
+async function readError(res: Response, fallback: string): Promise<string> {
+  const body = (await res.json().catch(() => null)) as {
+    error?: string;
+  } | null;
+  return body?.error ?? `${fallback} (HTTP ${res.status}).`;
+}
 
 function formatBytes(bytes: number): string {
   if (!bytes) return "0 Mo";
@@ -32,6 +43,77 @@ function formatBytes(bytes: number): string {
 function formatDate(iso: string | null): string {
   if (!iso) return "jamais";
   return new Date(iso).toLocaleString("fr-FR");
+}
+
+/**
+ * Uploads the assembled archive in small chunks (1 chunk = 1 R2 part).
+ * A single big PUT is rejected with 413 by the Cloudflare proxy, so each
+ * request stays at 8 Mo. Failed parts are retried, then the session is
+ * aborted server-side to avoid orphaned multipart uploads.
+ */
+async function uploadBundle(
+  blob: Blob,
+  fileCount: number,
+  totalBytes: number,
+  onProgress: (doneParts: number, totalParts: number, doneMB: number) => void,
+): Promise<void> {
+  const initRes = await fetch("/api/admin/bundle-upload?op=init", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ fileCount, totalBytes }),
+  });
+  if (!initRes.ok) throw new Error(await readError(initRes, "Initialisation impossible"));
+  const { uploadId } = (await initRes.json()) as { uploadId: string };
+
+  const totalParts = Math.max(1, Math.ceil(blob.size / UPLOAD_CHUNK_BYTES));
+  const etags: Array<{ partNumber: number; etag: string }> = [];
+  let doneBytes = 0;
+
+  try {
+    for (let partNumber = 1; partNumber <= totalParts; partNumber += 1) {
+      const start = (partNumber - 1) * UPLOAD_CHUNK_BYTES;
+      const chunk = blob.slice(start, start + UPLOAD_CHUNK_BYTES);
+      let lastError = "Échec de l'envoi.";
+      for (let attempt = 1; attempt <= PART_MAX_RETRIES; attempt += 1) {
+        const partRes = await fetch(
+          `/api/admin/bundle-upload?op=part&uploadId=${encodeURIComponent(uploadId)}&partNumber=${partNumber}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/octet-stream" },
+            body: chunk,
+          },
+        );
+        if (partRes.ok) {
+          const { etag } = (await partRes.json()) as { etag: string };
+          etags.push({ partNumber, etag });
+          doneBytes += chunk.size;
+          onProgress(partNumber, totalParts, doneBytes / 1024 / 1024);
+          lastError = "";
+          break;
+        }
+        lastError = await readError(partRes, "Échec de l'envoi");
+      }
+      if (lastError) {
+        throw new Error(`Part ${partNumber}/${totalParts} : ${lastError}`);
+      }
+    }
+
+    const completeRes = await fetch("/api/admin/bundle-upload?op=complete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ uploadId, parts: etags }),
+    });
+    if (!completeRes.ok) {
+      throw new Error(await readError(completeRes, "Finalisation impossible"));
+    }
+  } catch (error) {
+    await fetch("/api/admin/bundle-upload?op=abort", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ uploadId }),
+    }).catch(() => undefined);
+    throw error;
+  }
 }
 
 /**
@@ -140,22 +222,10 @@ export function BundleBanner() {
         (metadata) => setPhase({ name: "zip", percent: metadata.percent }),
       );
 
-      setPhase({ name: "upload" });
-      const put = await fetch("/api/admin/bundle", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/zip",
-          "X-Bundle-File-Count": String(fileCount),
-          "X-Bundle-Total-Bytes": String(manifest.totalR2Bytes),
-        },
-        body: blob,
-      });
-      if (!put.ok) {
-        const body = (await put.json().catch(() => null)) as {
-          error?: string;
-        } | null;
-        throw new Error(body?.error ?? `Envoi impossible (HTTP ${put.status}).`);
-      }
+      setPhase({ name: "upload", doneParts: 0, totalParts: 1, doneMB: 0 });
+      await uploadBundle(blob, fileCount, manifest.totalR2Bytes, (doneParts, totalParts, doneMB) =>
+        setPhase({ name: "upload", doneParts, totalParts, doneMB }),
+      );
 
       setPhase({ name: "idle" });
       await refreshStatus();
@@ -222,7 +292,10 @@ export function BundleBanner() {
           </div>
         )}
         {phase.name === "upload" && (
-          <div style={{ marginTop: "0.25rem" }}>Envoi vers le stockage…</div>
+          <div style={{ marginTop: "0.25rem" }}>
+            Envoi vers le stockage… {phase.doneParts}/{phase.totalParts} parts
+            ({phase.doneMB.toFixed(1)} Mo)
+          </div>
         )}
       </div>
       <button

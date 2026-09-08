@@ -60,12 +60,6 @@ export async function fileExists(
 /** R2 key holding the prebuilt all-skins archive (built by the admin). */
 export const BUNDLE_KEY = "bundles/all.zip";
 
-/**
- * Minimum part size for R2 multipart uploads (5 MiB, except the last part).
- * We use 8 MiB parts so memory stays constant no matter the archive size.
- */
-const BUNDLE_PART_SIZE = 8 * 1024 * 1024;
-
 export interface BundleMetadata {
   builtAt: string;
   size: number;
@@ -87,16 +81,24 @@ export async function headBundle(
 }
 
 /**
- * Store a (potentially huge) bundle without ever buffering it in memory:
- * the incoming stream is sliced into 8 MiB parts uploaded sequentially via
- * R2 multipart upload. CPU per byte is ~zero (plain memory copies), so this
- * stays far below Workers Free limits, unlike zip assembly with checksums.
+ * Chunked bundle upload (each HTTP request carries a small chunk).
+ *
+ * Why: Cloudflare caps a single proxied upload (~100 Mo on Free) with a
+ * 413, and our archive is bigger. The browser therefore sends 8 Mo chunks;
+ * each one becomes exactly one R2 multipart part. No server state needed:
+ * the client holds the R2 uploadId and the completed-parts list.
+ * Per request: constant memory, ~zero CPU — safe on Workers Free.
  */
-export async function storeBundleStream(
+export interface BundleUploadInit {
+  builtAt: string;
+  fileCount: number;
+  totalBytes: number;
+}
+
+export async function initBundleUpload(
   bucket: R2Bucket,
-  body: ReadableStream<Uint8Array>,
-  metadata: { builtAt: string; fileCount: number; totalBytes: number },
-): Promise<{ bytes: number; parts: number }> {
+  metadata: BundleUploadInit,
+): Promise<{ uploadId: string }> {
   const upload = await bucket.createMultipartUpload(BUNDLE_KEY, {
     httpMetadata: {
       contentType: "application/zip",
@@ -108,56 +110,34 @@ export async function storeBundleStream(
       totalBytes: String(metadata.totalBytes),
     },
   });
+  return { uploadId: upload.uploadId };
+}
 
-  const reader = body.getReader();
-  let part = new Uint8Array(BUNDLE_PART_SIZE);
-  let partLen = 0;
-  let partNumber = 0;
-  let totalBytes = 0;
-  const completedParts: R2UploadedPart[] = [];
+export async function uploadBundlePart(
+  bucket: R2Bucket,
+  uploadId: string,
+  partNumber: number,
+  chunk: ArrayBuffer,
+): Promise<{ etag: string }> {
+  const upload = bucket.resumeMultipartUpload(BUNDLE_KEY, uploadId);
+  const part = await upload.uploadPart(partNumber, chunk);
+  return { etag: part.etag };
+}
 
-  async function flush(final: boolean): Promise<void> {
-    if (partLen === 0 && !final) return;
-    if (partLen === 0 && final && partNumber > 0) return;
-    partNumber += 1;
-    // uploadPart is awaited: the buffer is only reused once R2 has it.
-    completedParts.push(await upload.uploadPart(partNumber, part.slice(0, partLen)));
-    partLen = 0;
-  }
+export async function completeBundleUpload(
+  bucket: R2Bucket,
+  uploadId: string,
+  parts: Array<{ partNumber: number; etag: string }>,
+): Promise<{ size: number }> {
+  const upload = bucket.resumeMultipartUpload(BUNDLE_KEY, uploadId);
+  const object = await upload.complete(parts);
+  return { size: object.size };
+}
 
-  try {
-    for (;;) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      if (!value || value.length === 0) continue;
-      let offset = 0;
-      while (offset < value.length) {
-        const room = part.length - partLen;
-        const n = Math.min(room, value.length - offset);
-        part.set(value.subarray(offset, offset + n), partLen);
-        partLen += n;
-        offset += n;
-        totalBytes += n;
-        if (partLen === part.length) {
-          await flush(false);
-        }
-      }
-    }
-
-    if (totalBytes === 0) {
-      throw new Error("Archive vide : rien à stocker.");
-    }
-    await flush(true);
-    await upload.complete(completedParts);
-    return { bytes: totalBytes, parts: partNumber };
-  } catch (error) {
-    try {
-      await upload.abort();
-    } catch {
-      // Ignore abort failures: the original error is what matters.
-    }
-    throw error;
-  } finally {
-    reader.releaseLock();
-  }
+export async function abortBundleUpload(
+  bucket: R2Bucket,
+  uploadId: string,
+): Promise<void> {
+  const upload = bucket.resumeMultipartUpload(BUNDLE_KEY, uploadId);
+  await upload.abort();
 }
