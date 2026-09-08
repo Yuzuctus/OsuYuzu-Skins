@@ -1,36 +1,14 @@
-import JSZip from "jszip";
 import type { Route } from "./+types/api.download-all";
 import { getAllSkins } from "~/lib/db.server";
 import { getFile } from "~/lib/r2.server";
 import { normalizeOptionalHttpUrl } from "~/lib/security.server";
+import { ZipStreamWriter } from "~/lib/zip-stream.server";
+
+const textEncoder = new TextEncoder();
 
 function sanitizeFileName(fileName: string): string {
   const normalized = fileName.trim().replace(/[\\/:*?"<>|]/g, "_");
   return normalized.length > 0 ? normalized : "skin.osk";
-}
-
-function hasKnownArchiveExtension(fileName: string): boolean {
-  return /\.(osk|zip|rar|7z)$/i.test(fileName);
-}
-
-function inferFileNameFromUrl(url: string, fallback: string): string {
-  try {
-    const parsed = new URL(url);
-    const raw = parsed.pathname.split("/").pop() ?? "";
-    const decoded = decodeURIComponent(raw);
-    if (!decoded) {
-      return fallback;
-    }
-
-    const candidate = sanitizeFileName(decoded);
-    if (hasKnownArchiveExtension(candidate)) {
-      return candidate;
-    }
-
-    return `${candidate}.osk`;
-  } catch {
-    return fallback;
-  }
 }
 
 function buildUniqueFileName(
@@ -67,88 +45,130 @@ export async function loader({ context }: Route.LoaderArgs) {
     return new Response("No skins available", { status: 404 });
   }
 
-  const zip = new JSZip();
   const usedNames = new Set<string>();
+  const now = new Date();
+
+  type LocalEntry = { archiveName: string; key: string; label: string };
+  type ExternalEntry = { archiveName: string; url: string; label: string };
+
+  const localEntries: LocalEntry[] = [];
+  const externalEntries: ExternalEntry[] = [];
   const skipped: string[] = [];
-  let addedFiles = 0;
 
   for (const skin of skins) {
-    const fallbackName = sanitizeFileName(`${skin.name}.osk`);
-
     if (skin.skin_file_key) {
-      const file = await getFile(bucket, skin.skin_file_key);
-      if (!file) {
-        skipped.push(`${skin.name}\u00A0: fichier introuvable dans le stockage.`);
-        continue;
-      }
-
-      const rawName = skin.skin_file_name || fallbackName;
-      const finalName = buildUniqueFileName(rawName, usedNames);
-      const bytes = await file.arrayBuffer();
-
-      zip.file(finalName, bytes);
-      addedFiles += 1;
+      const rawName = skin.skin_file_name || `${skin.name}.osk`;
+      localEntries.push({
+        archiveName: buildUniqueFileName(rawName, usedNames),
+        key: skin.skin_file_key,
+        label: skin.name,
+      });
       continue;
     }
 
     const safeUrl = normalizeOptionalHttpUrl(skin.download_url);
-    if (!safeUrl) {
-      skipped.push(`${skin.name}\u00A0: aucun fichier local ni URL valide.`);
+    if (safeUrl) {
+      // Les fichiers externes (ex. Google Drive) ne sont volontairement PAS
+      // re-téléchargés par le Worker : chaque `fetch()` externe coûte une
+      // subrequest + du buffering mémoire, et Drive bloque souvent les IPs
+      // de Cloudflare (page de confirmation / 403). On embarque un raccourci
+      // `.url` + une liste de liens à la place.
+      externalEntries.push({
+        archiveName: buildUniqueFileName(`${skin.name}.url`, usedNames),
+        url: safeUrl,
+        label: skin.name,
+      });
       continue;
     }
 
-    try {
-      const response = await fetch(safeUrl);
-      if (!response.ok) {
-        skipped.push(`${skin.name}\u00A0: téléchargement distant impossible (${response.status}).`);
-        continue;
-      }
-
-      const remoteBytes = await response.arrayBuffer();
-      const rawName = inferFileNameFromUrl(safeUrl, fallbackName);
-      const finalName = buildUniqueFileName(rawName, usedNames);
-
-      zip.file(finalName, remoteBytes);
-      addedFiles += 1;
-    } catch {
-      skipped.push(`${skin.name}\u00A0: erreur réseau lors du téléchargement distant.`);
-    }
+    skipped.push(`${skin.name} : aucun fichier local ni URL valide.`);
   }
 
-  if (addedFiles === 0) {
+  if (
+    localEntries.length === 0 &&
+    externalEntries.length === 0 &&
+    skipped.length === 0
+  ) {
     return new Response("No downloadable skins available", { status: 404 });
   }
 
-  if (skipped.length > 0) {
-    zip.file(
-      "README-missing-skins.txt",
-      [
-        "Les skins ci-dessous n'ont pas pu être inclus dans l'archive\u00A0:",
-        "",
-        ...skipped,
-      ].join("\n"),
-    );
-  }
+  // Pas de `Content-Length` : la réponse est streamée au fur et à mesure de
+  // la lecture R2, la mémoire reste constante quel que soit le volume total.
+  // Méthode STORE (sans compression) : CPU quasi nul, pas de dépassement
+  // des limites du Worker contrairement à DEFLATE niveau 9 sur JSZip.
+  const stream = new TransformStream<Uint8Array, Uint8Array>();
+  const zip = new ZipStreamWriter(stream.writable);
 
-  const zipData = await zip.generateAsync({
-    type: "arraybuffer",
-    compression: "DEFLATE",
-    compressionOptions: { level: 9 },
-  });
+  // Le producteur tourne en tâche de fond ; toute erreur mid-stream abort
+  // le flux (le client reçoit un zip tronqué plutôt qu'un Worker en erreur).
+  void (async () => {
+    try {
+      const missingDuringStream: string[] = [...skipped];
 
-  const now = new Date().toISOString().slice(0, 10);
-  const archiveName = `osu-yuzu-skins-${now}.zip`;
+      for (const entry of localEntries) {
+        const file = await getFile(bucket, entry.key);
+        if (!file) {
+          missingDuringStream.push(
+            `${entry.label} : fichier introuvable dans le stockage.`,
+          );
+          continue;
+        }
+        await zip.addFile(entry.archiveName, file.body, now);
+      }
+
+      for (const entry of externalEntries) {
+        const shortcut = textEncoder.encode(
+          `[InternetShortcut]\r\nURL=${entry.url}\r\n`,
+        );
+        await zip.addBuffer(entry.archiveName, shortcut, now);
+      }
+
+      if (externalEntries.length > 0) {
+        const links = [
+          "Téléchargements externes (ouvrez les liens ci-dessous) :",
+          "",
+          ...externalEntries.map((e) => `- ${e.label} : ${e.url}`),
+          "",
+          "Astuce : les fichiers `.url` à côté s'ouvrent d'un double-clic sous Windows.",
+        ].join("\n");
+        await zip.addBuffer(
+          buildUniqueFileName("LIENS-EXTERNES.txt", usedNames),
+          textEncoder.encode(links),
+          now,
+        );
+      }
+
+      if (missingDuringStream.length > 0) {
+        const readme = [
+          "Les skins ci-dessous n'ont pas pu être inclus dans l'archive :",
+          "",
+          ...missingDuringStream,
+        ].join("\n");
+        await zip.addBuffer(
+          buildUniqueFileName("README-missing-skins.txt", usedNames),
+          textEncoder.encode(readme),
+          now,
+        );
+      }
+
+      await zip.finish();
+    } catch (error) {
+      await zip.abort(error);
+    }
+  })();
+
+  const today = now.toISOString().slice(0, 10);
+  const archiveName = `osu-yuzu-skins-${today}.zip`;
   const safeArchiveName = archiveName.replace(/[^\x20-\x7E]/g, "_");
   const encodedArchiveName = encodeURIComponent(archiveName).replace(
     /%20/g,
     " ",
   );
 
-  return new Response(zipData, {
+  return new Response(stream.readable, {
     headers: {
       "Content-Type": "application/zip",
       "Content-Disposition": `attachment; filename="${safeArchiveName}"; filename*=UTF-8''${encodedArchiveName}`,
-      "Content-Length": String(zipData.byteLength),
       "Cache-Control": "no-store",
     },
   });
