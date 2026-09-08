@@ -24,7 +24,13 @@ const MAX_CHUNK_BYTES = 32 * 1024 * 1024;
 const MAX_PART_NUMBER = 10_000;
 
 function isValidUploadId(value: unknown): value is string {
-  return typeof value === "string" && value.length > 0 && value.length <= 256;
+  // R2 multipart uploadIds are opaque and can be long (> 256 chars).
+  return typeof value === "string" && value.length > 0 && value.length <= 2048;
+}
+
+function invalidUploadId(value: unknown): Response {
+  const len = typeof value === "string" ? value.length : -1;
+  return error(`uploadId invalide (longueur reçue : ${len}).`);
 }
 
 function error(message: string, status = 400): Response {
@@ -64,7 +70,7 @@ export async function action({ request, context }: Route.ActionArgs) {
       if (request.method !== "PUT") return error("Method not allowed", 405);
       const uploadId = url.searchParams.get("uploadId") ?? "";
       const partNumber = Number(url.searchParams.get("partNumber") ?? 0);
-      if (!isValidUploadId(uploadId)) return error("uploadId invalide.");
+      if (!isValidUploadId(uploadId)) return invalidUploadId(uploadId);
       if (
         !Number.isInteger(partNumber) ||
         partNumber < 1 ||
@@ -90,7 +96,7 @@ export async function action({ request, context }: Route.ActionArgs) {
         uploadId?: unknown;
         parts?: unknown;
       } | null;
-      if (!isValidUploadId(body?.uploadId)) return error("uploadId invalide.");
+      if (!isValidUploadId(body?.uploadId)) return invalidUploadId(body?.uploadId);
       if (!Array.isArray(body?.parts) || body.parts.length === 0) {
         return error("parts invalide.");
       }
@@ -118,7 +124,7 @@ export async function action({ request, context }: Route.ActionArgs) {
       const body = (await request.json().catch(() => null)) as {
         uploadId?: unknown;
       } | null;
-      if (!isValidUploadId(body?.uploadId)) return error("uploadId invalide.");
+      if (!isValidUploadId(body?.uploadId)) return invalidUploadId(body?.uploadId);
       await abortBundleUpload(bucket, body.uploadId);
       return Response.json({ ok: true });
     }
