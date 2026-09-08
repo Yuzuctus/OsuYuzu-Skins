@@ -107,6 +107,22 @@ export async function getSkinById(
   return { ...skin, tags: tags.results };
 }
 
+/**
+ * Latest skin modification timestamp (ISO string), used to detect whether
+ * the prebuilt "download all" bundle is stale. Returns null when empty.
+ */
+export async function getMaxSkinUpdatedAt(
+  db: D1Database,
+): Promise<string | null> {
+  const row = await db
+    .prepare("SELECT MAX(updated_at) as max_updated_at FROM skins")
+    .first<{ max_updated_at: string | null }>();
+  const raw = row?.max_updated_at ?? null;
+  if (!raw) return null;
+  // D1 stores `datetime('now')` as "YYYY-MM-DD HH:MM:SS" (UTC, no suffix).
+  return raw.includes("T") ? raw : `${raw.replace(" ", "T")}Z`;
+}
+
 export async function createSkin(
   db: D1Database,
   data: {

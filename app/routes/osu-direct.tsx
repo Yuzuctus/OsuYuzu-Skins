@@ -1,5 +1,6 @@
 import { Outlet, NavLink, redirect, Form } from "react-router";
 import type { Route } from "./+types/osu-direct";
+import { BundleBanner } from "~/components/BundleBanner";
 import { getAdmin, cleanExpiredSessions } from "~/lib/db.server";
 import { requireAdminSession } from "~/lib/security.server";
 
@@ -74,6 +75,7 @@ export default function AdminLayout({ loaderData }: Route.ComponentProps) {
         </nav>
       </aside>
       <main className="admin-main">
+        <BundleBanner />
         <Outlet />
       </main>
     </div>
