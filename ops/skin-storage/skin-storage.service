@@ -1,0 +1,21 @@
+[Unit]
+Description=OsuYuzu skin file storage
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=osuyuzu-storage
+Group=osuyuzu-storage
+WorkingDirectory=/opt/osuyuzu-storage
+EnvironmentFile=/etc/osuyuzu-storage.env
+ExecStart=/usr/local/bin/node /opt/osuyuzu-storage/server.mjs
+Restart=on-failure
+RestartSec=2
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/srv/osuyuzu-skins
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

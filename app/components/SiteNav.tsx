@@ -38,6 +38,29 @@ export function YzThemeToggle() {
 }
 
 export function SiteNav() {
+  const [currentSection, setCurrentSection] = useState<"collection" | "footer">("collection");
+
+  useEffect(() => {
+    const footer = document.getElementById("footer");
+    if (!footer) return;
+
+    const updateCurrentSection = () => {
+      setCurrentSection(
+        footer.getBoundingClientRect().top <= window.innerHeight * 0.6
+          ? "footer"
+          : "collection",
+      );
+    };
+
+    updateCurrentSection();
+    window.addEventListener("scroll", updateCurrentSection, { passive: true });
+    window.addEventListener("resize", updateCurrentSection);
+    return () => {
+      window.removeEventListener("scroll", updateCurrentSection);
+      window.removeEventListener("resize", updateCurrentSection);
+    };
+  }, []);
+
   return (
     <header className="ag-site-header skins-nav">
       <div className="ag-container ag-site-header__inner">
@@ -47,10 +70,10 @@ export function SiteNav() {
           </span>
         </a>
         <nav className="ag-site-header__nav" aria-label="Navigation">
-          <a href="#collection" aria-current="page">
+          <a href="#collection" aria-current={currentSection === "collection" ? "location" : undefined}>
             Collection
           </a>
-          <a href="#footer">
+          <a href="#footer" aria-current={currentSection === "footer" ? "location" : undefined}>
             Me trouver
           </a>
           <a href="https://yuzuctus.fr/">

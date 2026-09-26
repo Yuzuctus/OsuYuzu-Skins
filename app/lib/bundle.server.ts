@@ -1,10 +1,10 @@
 import type { SkinWithTags } from "./db.server";
 import { normalizeOptionalHttpUrl } from "./security.server";
 
-export interface BundleR2Entry {
-  kind: "r2";
+export interface BundleStoredEntry {
+  kind: "stored";
   archiveName: string;
-  /** R2 object key of the skin file. */
+  /** Storage key of the skin file. */
   key: string;
   label: string;
   /** Size in bytes as stored in D1 (0 when unknown, e.g. legacy rows). */
@@ -22,12 +22,12 @@ export interface BundleExternalEntry {
 
 export interface BundleManifest {
   generatedAt: string;
-  files: Array<BundleR2Entry | BundleExternalEntry>;
+  files: Array<BundleStoredEntry | BundleExternalEntry>;
   /** Human-readable notes for skins that cannot be embedded. */
   missing: string[];
-  /** Sum of known R2 sizes (unknown sizes excluded, see ESTIMATED_SIZE). */
-  totalR2Bytes: number;
-  r2Count: number;
+  /** Sum of known file sizes (unknown sizes excluded, see ESTIMATED_SIZE). */
+  totalStoredBytes: number;
+  storedCount: number;
 }
 
 /** Rough per-file estimate used when D1 has no size (legacy rows). */
@@ -69,23 +69,23 @@ export function buildBundleManifest(skins: SkinWithTags[]): BundleManifest {
   const usedNames = new Set<string>();
   const files: BundleManifest["files"] = [];
   const missing: string[] = [];
-  let totalR2Bytes = 0;
-  let r2Count = 0;
+  let totalStoredBytes = 0;
+  let storedCount = 0;
 
   for (const skin of skins) {
     if (skin.skin_file_key) {
       const rawName = skin.skin_file_name || `${skin.name}.osk`;
       const size = skin.skin_file_size || 0;
       files.push({
-        kind: "r2",
+        kind: "stored",
         archiveName: buildUniqueFileName(rawName, usedNames),
         key: skin.skin_file_key,
         label: skin.name,
         size,
         downloadPath: `/api/download/${skin.id}`,
       });
-      totalR2Bytes += size;
-      r2Count += 1;
+      totalStoredBytes += size;
+      storedCount += 1;
       continue;
     }
 
@@ -110,16 +110,16 @@ export function buildBundleManifest(skins: SkinWithTags[]): BundleManifest {
     generatedAt: new Date().toISOString(),
     files,
     missing,
-    totalR2Bytes,
-    r2Count,
+    totalStoredBytes,
+    storedCount,
   };
 }
 
 /** Conservative total used to decide whether on-demand streaming is safe. */
 export function estimateBundleBytes(manifest: BundleManifest): number {
-  let total = manifest.totalR2Bytes;
+  let total = manifest.totalStoredBytes;
   for (const file of manifest.files) {
-    if (file.kind === "r2" && file.size <= 0) {
+    if (file.kind === "stored" && file.size <= 0) {
       total += ESTIMATED_UNKNOWN_FILE_BYTES;
     }
   }

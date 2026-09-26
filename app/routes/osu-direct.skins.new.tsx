@@ -1,14 +1,15 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Form, redirect, useNavigation, Link } from "react-router";
+import { Form, redirect, useNavigation, useSubmit, Link } from "react-router";
 import type { Route } from "./+types/osu-direct.skins.new";
 import { getAllTags, createSkin } from "~/lib/db.server";
-import { uploadImage, uploadSkinFile } from "~/lib/r2.server";
+import { uploadImage } from "~/lib/r2.server";
+import { uploadToSkinVps } from "~/lib/skin-storage.client";
+import { isSkinStorageKey, storedFileStatus } from "~/lib/skin-storage.server";
 import {
   assertSameOrigin,
   normalizeOptionalHttpUrl,
   requireAdminSession,
   validateImageUpload,
-  validateSkinUpload,
 } from "~/lib/security.server";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
@@ -33,11 +34,16 @@ export async function action({ request, context }: Route.ActionArgs) {
   );
   const tagIds = formData.getAll("tags") as string[];
   const imageFile = formData.get("image") as File | null;
-  const skinFile = formData.get("skinFile") as File | null;
+  const rawSkinFile = formData.get("skinFile") as File | null;
+  const uploadedKey = formData.get("uploadedSkinKey");
+  const uploadedNonce = formData.get("uploadedSkinNonce");
+  const uploadedName = formData.get("uploadedSkinName");
+  const uploadedSize = Number(formData.get("uploadedSkinSize"));
 
   if (!name) {
     return { error: "Le nom est requis." };
   }
+  if (rawSkinFile && rawSkinFile.size > 0) return { error: "Envoyez le fichier skin depuis le formulaire interactif." };
 
   if ((formData.get("forumLink") as string)?.trim() && !forumLink) {
     return { error: "Lien forum invalide (http/https requis)." };
@@ -54,31 +60,30 @@ export async function action({ request, context }: Route.ActionArgs) {
     }
   }
 
-  if (skinFile && skinFile.size > 0) {
-    const skinError = validateSkinUpload(skinFile);
-    if (skinError) {
-      return { error: skinError };
-    }
-  }
-
-  const skinId = crypto.randomUUID();
   let imageKey: string | undefined;
   let skinFileKey: string | undefined;
   let skinFileName: string | undefined;
   let skinFileSize: number | undefined;
 
-  // Upload image to R2
+  if (uploadedKey !== null) {
+    if (!isSkinStorageKey(uploadedKey) || typeof uploadedNonce !== "string" ||
+      typeof uploadedName !== "string" || uploadedName.length > 512 ||
+      !Number.isSafeInteger(uploadedSize) || uploadedSize < 1) {
+      return { error: "Fichier skin envoyé invalide." };
+    }
+    const stored = await storedFileStatus(context.cloudflare.env, uploadedKey);
+    if (!stored.exists || stored.nonce !== uploadedNonce || stored.size !== uploadedSize || stored.name !== uploadedName) {
+      return { error: "Le fichier skin n'a pas été confirmé sur le VPS." };
+    }
+    skinFileKey = uploadedKey;
+    skinFileName = uploadedName;
+    skinFileSize = uploadedSize;
+  }
+
+  const skinId = crypto.randomUUID();
   if (imageFile && imageFile.size > 0) {
     const buffer = await imageFile.arrayBuffer();
     imageKey = await uploadImage(bucket, buffer, skinId);
-  }
-
-  // Upload skin file to R2
-  if (skinFile && skinFile.size > 0) {
-    const buffer = await skinFile.arrayBuffer();
-    skinFileKey = await uploadSkinFile(bucket, buffer, skinId, skinFile.name);
-    skinFileName = skinFile.name;
-    skinFileSize = skinFile.size;
   }
 
   await createSkin(db, {
@@ -102,7 +107,11 @@ export default function NewSkin({
 }: Route.ComponentProps) {
   const { tags } = loaderData;
   const navigation = useNavigation();
-  const isSubmitting = navigation.state === "submitting";
+  const submit = useSubmit();
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const isSubmitting = navigation.state === "submitting" || uploading;
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [skinFileName, setSkinFileName] = useState<string | null>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -160,6 +169,32 @@ export default function NewSkin({
     }
   }
 
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    const file = skinInputRef.current?.files?.[0];
+    if (!file) return;
+    event.preventDefault();
+    if (uploading) return;
+    const form = event.currentTarget;
+    setUploading(true);
+    setUploadError(null);
+    try {
+      const uploaded = await uploadToSkinVps(file, {
+        kind: "skin", name: file.name,
+      }, (sent, total) => setUploadProgress(Math.round(sent / total * 100)));
+      const data = new FormData(form);
+      data.delete("skinFile");
+      data.set("uploadedSkinKey", uploaded.key);
+      data.set("uploadedSkinNonce", uploaded.nonce);
+      data.set("uploadedSkinName", file.name);
+      data.set("uploadedSkinSize", String(uploaded.size));
+      submit(data, { method: "post", encType: "multipart/form-data" });
+    } catch (error) {
+      setUploadError(error instanceof Error ? error.message : "Envoi vers le VPS impossible.");
+    } finally {
+      setUploading(false);
+    }
+  }
+
   return (
     <>
       <div className="admin-page-header">
@@ -174,8 +209,9 @@ export default function NewSkin({
           {actionData.error}
         </div>
       )}
+      {uploadError && <div className="login-error admin-form-error" role="alert">{uploadError}</div>}
 
-      <Form method="post" encType="multipart/form-data" className="admin-form">
+      <Form method="post" encType="multipart/form-data" className="admin-form" onSubmit={handleSubmit}>
         <div className="form-group">
           <label className="form-label" htmlFor="name">
             Nom du skin *
@@ -331,7 +367,7 @@ export default function NewSkin({
           <button type="submit" className="btn-primary" disabled={isSubmitting}>
             {isSubmitting ? (
               <>
-                Ajout en cours...
+                {uploading ? `Envoi du skin ${uploadProgress} %...` : "Ajout en cours..."}
               </>
             ) : (
               <>

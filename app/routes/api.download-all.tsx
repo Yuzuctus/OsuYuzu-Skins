@@ -8,8 +8,10 @@ import {
   missingSkinsFile,
   type BundleExternalEntry,
 } from "~/lib/bundle.server";
-import { BUNDLE_KEY, getFile } from "~/lib/r2.server";
+import { getFile } from "~/lib/r2.server";
+import { BUNDLE_KEY } from "~/lib/skin-storage.server";
 import { ZipStreamWriter } from "~/lib/zip-stream.server";
+import { publicFileUrl } from "~/lib/skin-storage.server";
 
 /**
  * On-demand streaming is only a fallback for small collections: a slow
@@ -40,15 +42,18 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   const db = context.cloudflare.env.DB;
   const bucket = context.cloudflare.env.R2_BUCKET;
 
+  const vpsUrl = publicFileUrl(context.cloudflare.env, BUNDLE_KEY, archiveName());
+  const vpsHead = await fetch(vpsUrl, { method: "HEAD" }).catch(() => null);
+  if (vpsHead?.ok) return Response.redirect(vpsUrl, 302);
+
   // HEAD probes (uptime checks, link previews) must not start the pump:
   // with no body consumer, backpressure blocks forever and the Worker dies.
   if (request.method === "HEAD") {
     return new Response(null, { headers: archiveHeaders(archiveName()) });
   }
 
-  // Primary path: relay the prebuilt bundle. Pure R2 passthrough, exactly
-  // like the single-file endpoint that already works on Workers Free —
-  // no JS touches the bytes, so no CPU/memory limits can trip.
+  // Read-only R2 fallback while migration is verified or if the VPS is down.
+  // The normal path above redirects and serves the bytes directly from VPS.
   const cached = await getFile(bucket, BUNDLE_KEY);
   if (cached) {
     return new Response(cached.body, {
@@ -92,7 +97,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     try {
       const missing = [...manifest.missing];
       for (const file of manifest.files) {
-        if (file.kind !== "r2") continue;
+        if (file.kind !== "stored") continue;
         const obj = await getFile(bucket, file.key);
         if (!obj) {
           missing.push(

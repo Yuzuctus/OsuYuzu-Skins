@@ -1,14 +1,15 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Form, redirect, useNavigation, Link } from "react-router";
+import { Form, redirect, useNavigation, useSubmit, Link } from "react-router";
 import type { Route } from "./+types/osu-direct.skins.$id";
 import { getSkinById, getAllTags, updateSkin } from "~/lib/db.server";
-import { uploadImage, uploadSkinFile, deleteFile } from "~/lib/r2.server";
+import { uploadImage } from "~/lib/r2.server";
+import { uploadToSkinVps } from "~/lib/skin-storage.client";
+import { isSkinStorageKey, storedFileStatus } from "~/lib/skin-storage.server";
 import {
   assertSameOrigin,
   normalizeOptionalHttpUrl,
   requireAdminSession,
   validateImageUpload,
-  validateSkinUpload,
 } from "~/lib/security.server";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
@@ -43,11 +44,16 @@ export async function action({ params, request, context }: Route.ActionArgs) {
   );
   const tagIds = formData.getAll("tags") as string[];
   const imageFile = formData.get("image") as File | null;
-  const skinFile = formData.get("skinFile") as File | null;
+  const uploadedKey = formData.get("uploadedSkinKey");
+  const uploadedNonce = formData.get("uploadedSkinNonce");
+  const uploadedName = formData.get("uploadedSkinName");
+  const uploadedSize = Number(formData.get("uploadedSkinSize"));
+  const rawSkinFile = formData.get("skinFile") as File | null;
 
   if (!name) {
     return { error: "Le nom est requis." };
   }
+  if (rawSkinFile && rawSkinFile.size > 0) return { error: "Envoyez le fichier skin depuis le formulaire interactif." };
 
   if ((formData.get("forumLink") as string)?.trim() && !forumLink) {
     return { error: "Lien forum invalide (http/https requis)." };
@@ -64,13 +70,6 @@ export async function action({ params, request, context }: Route.ActionArgs) {
     }
   }
 
-  if (skinFile && skinFile.size > 0) {
-    const skinError = validateSkinUpload(skinFile);
-    if (skinError) {
-      return { error: skinError };
-    }
-  }
-
   const updateData: Parameters<typeof updateSkin>[2] = {
     name,
     forum_link: forumLink ?? undefined,
@@ -78,35 +77,24 @@ export async function action({ params, request, context }: Route.ActionArgs) {
     tagIds,
   };
 
-  // Fetch existing skin once for file cleanup
-  const existing =
-    (imageFile && imageFile.size > 0) || (skinFile && skinFile.size > 0)
-      ? await getSkinById(db, skinId)
-      : null;
-
-  // Upload new image if provided
-  if (imageFile && imageFile.size > 0) {
-    if (existing?.image_key) {
-      await deleteFile(bucket, existing.image_key);
+  if (uploadedKey !== null) {
+    if (!isSkinStorageKey(uploadedKey) || typeof uploadedNonce !== "string" ||
+      typeof uploadedName !== "string" || uploadedName.length > 512 ||
+      !Number.isSafeInteger(uploadedSize) || uploadedSize < 1) {
+      return { error: "Fichier skin envoyé invalide." };
     }
-    const buffer = await imageFile.arrayBuffer();
-    updateData.image_key = await uploadImage(bucket, buffer, skinId);
+    const stored = await storedFileStatus(context.cloudflare.env, uploadedKey);
+    if (!stored.exists || stored.nonce !== uploadedNonce || stored.size !== uploadedSize || stored.name !== uploadedName) {
+      return { error: "Le fichier skin n'a pas été confirmé sur le VPS." };
+    }
+    updateData.skin_file_key = uploadedKey;
+    updateData.skin_file_name = uploadedName;
+    updateData.skin_file_size = uploadedSize;
   }
 
-  // Upload new skin file if provided
-  if (skinFile && skinFile.size > 0) {
-    if (existing?.skin_file_key) {
-      await deleteFile(bucket, existing.skin_file_key);
-    }
-    const buffer = await skinFile.arrayBuffer();
-    updateData.skin_file_key = await uploadSkinFile(
-      bucket,
-      buffer,
-      skinId,
-      skinFile.name,
-    );
-    updateData.skin_file_name = skinFile.name;
-    updateData.skin_file_size = skinFile.size;
+  if (imageFile && imageFile.size > 0) {
+    const buffer = await imageFile.arrayBuffer();
+    updateData.image_key = await uploadImage(bucket, buffer, skinId);
   }
 
   await updateSkin(db, skinId, updateData);
@@ -120,7 +108,11 @@ export default function EditSkin({
 }: Route.ComponentProps) {
   const { skin, tags } = loaderData;
   const navigation = useNavigation();
-  const isSubmitting = navigation.state === "submitting";
+  const submit = useSubmit();
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const isSubmitting = navigation.state === "submitting" || uploading;
   const [imagePreview, setImagePreview] = useState<string | null>(
     skin.image_key ? `/api/image/${skin.id}` : null,
   );
@@ -129,6 +121,32 @@ export default function EditSkin({
   );
   const imageInputRef = useRef<HTMLInputElement>(null);
   const skinInputRef = useRef<HTMLInputElement>(null);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    const file = skinInputRef.current?.files?.[0];
+    if (!file) return;
+    event.preventDefault();
+    if (uploading) return;
+    const form = event.currentTarget;
+    setUploading(true);
+    setUploadError(null);
+    try {
+      const uploaded = await uploadToSkinVps(file, {
+        kind: "skin", name: file.name,
+      }, (sent, total) => setUploadProgress(Math.round(sent / total * 100)));
+      const data = new FormData(form);
+      data.delete("skinFile");
+      data.set("uploadedSkinKey", uploaded.key);
+      data.set("uploadedSkinNonce", uploaded.nonce);
+      data.set("uploadedSkinName", file.name);
+      data.set("uploadedSkinSize", String(uploaded.size));
+      submit(data, { method: "post", encType: "multipart/form-data" });
+    } catch (error) {
+      setUploadError(error instanceof Error ? error.message : "Envoi vers le VPS impossible.");
+    } finally {
+      setUploading(false);
+    }
+  }
 
   // Revoke blob URLs on unmount to prevent memory leaks
   const imagePreviewRef = useRef<string | null>(null);
@@ -193,8 +211,9 @@ export default function EditSkin({
           {actionData.error}
         </div>
       )}
+      {uploadError && <div className="login-error admin-form-error" role="alert">{uploadError}</div>}
 
-      <Form method="post" encType="multipart/form-data" className="admin-form">
+      <Form method="post" encType="multipart/form-data" className="admin-form" onSubmit={handleSubmit}>
         <div className="form-group">
           <label className="form-label" htmlFor="name">
             Nom du skin *
@@ -348,7 +367,7 @@ export default function EditSkin({
           <button type="submit" className="btn-primary" disabled={isSubmitting}>
             {isSubmitting ? (
               <>
-                Mise à jour...
+                {uploading ? `Envoi du skin ${uploadProgress} %...` : "Mise à jour..."}
               </>
             ) : (
               <>

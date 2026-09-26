@@ -4,7 +4,7 @@ import { buildBundleManifest } from "~/lib/bundle.server";
 
 /**
  * Public manifest consumed by the admin "rebuild bundle" tool: one entry
- * per downloadable skin, pointing at the single-file passthrough endpoint.
+ * per downloadable skin, pointing at the stable single-file endpoint.
  * Tiny JSON, zero heavy lifting in the Worker.
  */
 export async function loader({ context }: Route.LoaderArgs) {

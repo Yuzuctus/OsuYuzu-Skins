@@ -4,6 +4,10 @@
   "compatibility_date": "2025-04-04",
   "compatibility_flags": ["nodejs_compat"],
   "main": "./workers/app.ts",
+  "vars": {
+    "SKIN_STORAGE_ORIGIN": "https://api.fm.yuzuctus.fr/skins-storage",
+  },
+  "secrets": { "required": ["SKIN_STORAGE_SECRET"] },
   // D1 Database binding
   "d1_databases": [
     {

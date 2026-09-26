@@ -7,24 +7,18 @@ export function BackToTop() {
     function handleScroll() {
       setVisible(window.scrollY > 300);
     }
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  function scrollToTop() {
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
-  }
-
   return (
-    <button
+    <a
       className={`yz-top${visible ? " visible" : ""}`}
-      onClick={scrollToTop}
+      href="#top"
       aria-label="Haut de page"
     >
       ↑
-    </button>
+    </a>
   );
 }

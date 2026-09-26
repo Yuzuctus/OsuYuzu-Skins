@@ -1,44 +1,52 @@
 import type { Route } from "./+types/api.admin.bundle";
-import { getMaxSkinUpdatedAt } from "~/lib/db.server";
-import { BUNDLE_KEY, headBundle } from "~/lib/r2.server";
-import { requireAdminSession } from "~/lib/security.server";
+import { getAllSkins, getMaxSkinUpdatedAt } from "~/lib/db.server";
+import { BUNDLE_KEY, rebuildStoredBundle, storedFileStatus } from "~/lib/skin-storage.server";
+import { assertSameOrigin, requireAdminSession } from "~/lib/security.server";
 
 /**
- * Prebuilt "download all" bundle, stored at `bundles/all.zip` in R2.
+ * Prebuilt "download all" bundle, stored on the skin VPS.
  *
  * - GET (admin): freshness status (exists / builtAt / stale / sizes).
- * - Uploads go through `api/admin/bundle-upload` (chunked, 1 chunk =
- *   1 R2 part) because a single proxied upload is capped (~100 Mo → 413).
+ * - POST (admin): ask the VPS to rebuild from the existing files and current
+ *   D1 metadata, without downloading the full collection into the browser.
  */
 export async function loader({ request, context }: Route.LoaderArgs) {
   const db = context.cloudflare.env.DB;
-  const bucket = context.cloudflare.env.R2_BUCKET;
   await requireAdminSession(request, db);
 
   const [bundle, skinsUpdatedAt] = await Promise.all([
-    headBundle(bucket),
+    storedFileStatus(context.cloudflare.env, BUNDLE_KEY),
     getMaxSkinUpdatedAt(db),
   ]);
 
   return Response.json(
     {
       key: BUNDLE_KEY,
-      exists: bundle !== null,
-      builtAt: bundle?.builtAt ?? null,
-      fileCount: bundle?.fileCount ?? 0,
-      size: bundle?.size ?? 0,
+      exists: bundle.exists,
+      builtAt: bundle.builtAt ?? null,
+      fileCount: bundle.fileCount ?? 0,
+      size: bundle.size ?? 0,
       skinsUpdatedAt,
       stale:
-        !bundle || (skinsUpdatedAt !== null && bundle.builtAt < skinsUpdatedAt),
+        !bundle.exists || (skinsUpdatedAt !== null && !!bundle.builtAt && bundle.builtAt < skinsUpdatedAt),
     },
     { headers: { "Cache-Control": "no-store" } },
   );
 }
 
-export async function action() {
-  // Uploads use the chunked `api/admin/bundle-upload` endpoint (a single
-  // big PUT is rejected with 413 by the Cloudflare proxy on Free).
-  return Response.json({ error: "Method not allowed" }, { status: 405 });
+export async function action({ request, context }: Route.ActionArgs) {
+  await requireAdminSession(request, context.cloudflare.env.DB);
+  assertSameOrigin(request);
+  if (request.method !== "POST") return Response.json({ error: "Method not allowed" }, { status: 405 });
+  const skins = await getAllSkins(context.cloudflare.env.DB);
+  await rebuildStoredBundle(context.cloudflare.env, skins.map((skin) => ({
+    name: skin.name,
+    skin_file_key: skin.skin_file_key,
+    skin_file_name: skin.skin_file_name,
+    skin_file_size: skin.skin_file_size,
+    download_url: skin.download_url,
+  })));
+  return Response.json({ ok: true }, { headers: { "Cache-Control": "no-store" } });
 }
 
 export async function headers() {

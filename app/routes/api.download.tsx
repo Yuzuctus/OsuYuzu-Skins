@@ -2,6 +2,7 @@ import type { Route } from "./+types/api.download";
 import { getSkinById } from "~/lib/db.server";
 import { getFile } from "~/lib/r2.server";
 import { normalizeOptionalHttpUrl } from "~/lib/security.server";
+import { publicFileUrl } from "~/lib/skin-storage.server";
 
 export async function loader({ params, context }: Route.LoaderArgs) {
   const db = context.cloudflare.env.DB;
@@ -12,14 +13,21 @@ export async function loader({ params, context }: Route.LoaderArgs) {
     return new Response("Not found", { status: 404 });
   }
 
-  // If skin file is hosted on R2
+  // A successful VPS HEAD keeps bytes off Workers. R2 remains a temporary
+  // read-only fallback while the production copy is verified and for rollback.
   if (skin.skin_file_key) {
+    const fileName = skin.skin_file_name || `${skin.name}.osk`;
+    const vpsUrl = publicFileUrl(context.cloudflare.env, skin.skin_file_key, fileName);
+    const vpsHead = await fetch(vpsUrl, { method: "HEAD" }).catch(() => null);
+    if (vpsHead?.ok) {
+      return Response.redirect(vpsUrl, 302);
+    }
+
     const file = await getFile(bucket, skin.skin_file_key);
     if (!file) {
       return new Response("File not found", { status: 404 });
     }
 
-    const fileName = skin.skin_file_name || `${skin.name}.osk`;
     // ASCII-safe filename fallback + RFC 5987 UTF-8 encoded filename
     const safeFileName = fileName.replace(/[^\x20-\x7E]/g, "_");
     const encodedFileName = encodeURIComponent(fileName).replace(/%20/g, " ");

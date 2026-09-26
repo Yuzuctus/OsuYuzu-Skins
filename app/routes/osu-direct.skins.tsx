@@ -8,6 +8,7 @@ import {
   getSkinById,
 } from "~/lib/db.server";
 import { deleteFile } from "~/lib/r2.server";
+import { deleteStoredFile } from "~/lib/skin-storage.server";
 import { assertSameOrigin, requireAdminSession } from "~/lib/security.server";
 import {
   DndContext,
@@ -70,14 +71,23 @@ export async function action({ request, context }: Route.ActionArgs) {
 
   if (intent === "delete") {
     const skinId = formData.get("skinId") as string;
-    // Get skin to clean up R2 files
     const skin = await getSkinById(db, skinId);
-    if (skin) {
-      if (skin.image_key) await deleteFile(bucket, skin.image_key);
-      if (skin.skin_file_key) await deleteFile(bucket, skin.skin_file_key);
-    }
+    if (!skin) return { success: false, message: "Skin introuvable." };
     await deleteSkin(db, skinId);
-    return { success: true, message: "Skin supprimé\u00A0!" };
+    const cleanupErrors: string[] = [];
+    if (skin) {
+      if (skin.image_key) await deleteFile(bucket, skin.image_key).catch(() => cleanupErrors.push("aperçu R2"));
+      if (skin.skin_file_key) {
+        await deleteStoredFile(context.cloudflare.env, skin.skin_file_key).catch(() => cleanupErrors.push("fichier VPS"));
+        await deleteFile(bucket, skin.skin_file_key).catch(() => cleanupErrors.push("ancienne copie R2"));
+      }
+    }
+    return {
+      success: true,
+      message: cleanupErrors.length
+        ? `Skin retiré de la collection ; nettoyage incomplet : ${cleanupErrors.join(", ")}.`
+        : "Skin supprimé\u00A0!",
+    };
   }
 
   return { success: false, message: "Action inconnue" };

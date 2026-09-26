@@ -1,0 +1,11 @@
+# Keep the existing FM API as the fallback. Only /skins-storage/* reaches
+# the independent file service; the frontend remains on Cloudflare.
+api.fm.yuzuctus.fr {
+	encode zstd gzip
+	handle /skins-storage/* {
+		reverse_proxy 127.0.0.1:8790
+	}
+	handle {
+		reverse_proxy 127.0.0.1:8787
+	}
+}
