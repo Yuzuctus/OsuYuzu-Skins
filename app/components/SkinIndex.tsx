@@ -99,7 +99,7 @@ export function FeaturedSkin({ skin }: { skin: Skin }) {
       <div className="ag-container">
         <div className="ag-feature">
           <div className="skins-feature__copy">
-            <p className="ag-label">01 — Mon main</p>
+            <p className="ag-label">01 — Skin utilisé actuellement</p>
             <h2 id="t-main" className="ag-feature__title">{skin.name}</h2>
             <div className="ag-hero__actions">
               {dl ? (
