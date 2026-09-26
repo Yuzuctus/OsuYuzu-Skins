@@ -1,0 +1,324 @@
+/* OSU!YUZU — collection shelves, featured entry, directory and footer. */
+
+/* The thin shelf label carries collection facts and the bulk download. */
+.yz-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs) var(--space-xl);
+}
+
+.yz-strip strong {
+  font-family: var(--font-display);
+}
+
+.yz-strip-action {
+  min-height: var(--size-control);
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  font-weight: 700;
+  text-underline-offset: 0.3em;
+}
+
+/* Featured skin: full image room with a museum-label caption below. */
+.yz-mint-field {
+  background: var(--accent-action);
+  color: var(--ink-on-action);
+}
+
+.yz-mint-field .yz-micro {
+  color: var(--ink-on-action);
+  opacity: 0.75;
+}
+
+.yz-featured-media {
+  overflow: clip;
+}
+
+.yz-featured-media img {
+  width: 100%;
+  aspect-ratio: 16 / 8.5;
+  object-fit: cover;
+}
+
+.yz-featured-caption {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-xl) var(--space-3xl);
+  padding-top: var(--space-m);
+}
+
+.yz-feat-title {
+  max-width: 22ch;
+  margin-top: var(--space-xs);
+  font-size: clamp(2.5rem, 5vw, 5rem);
+  font-stretch: 74%;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  line-height: 0.92;
+  overflow-wrap: anywhere;
+}
+
+.yz-featured-actions {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-l);
+}
+
+.yz-mint-field .yz-btn-cut {
+  background: var(--foundation-inverse);
+  color: var(--ink-on-inverse);
+}
+
+.yz-body .yz-mint-field a.yz-btn-cut {
+  color: var(--ink-on-inverse);
+}
+
+.yz-body .yz-mint-field a.yz-btn-cut:hover {
+  background: var(--accent-focus);
+  color: var(--ink-on-focus);
+}
+
+/* Collection header. */
+.yz-collection-heading {
+  margin-bottom: var(--space-l);
+}
+
+/* Directory: rank, name, preview and direct actions. */
+.yz-dir-head,
+.yz-dir-row {
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr) var(--skin-preview-width) 8.5rem;
+  gap: 0 var(--space-l);
+  align-items: end;
+}
+
+.yz-dir-head {
+  padding-block: var(--space-s);
+  border-bottom: var(--border-hairline) solid var(--border-strong);
+}
+
+.yz-dir-row {
+  position: relative;
+  isolation: isolate;
+  min-height: 11rem;
+  padding-block: var(--space-s);
+  border-bottom: var(--border-hairline) solid var(--border-strong);
+}
+
+.yz-dir-row::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0 calc(-1 * var(--space-s));
+  background: var(--band, var(--accent-action));
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--motion-enter) var(--ease-emphasis);
+}
+
+.yz-dir-row:hover::before,
+.yz-dir-row:focus-within::before {
+  transform: scaleX(1);
+}
+
+.yz-dir-row:focus-within {
+  outline: var(--border-focus) solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.yz-dir-num {
+  align-self: center;
+  color: var(--ink-secondary);
+  font-family: var(--font-func);
+  font-size: var(--text-small);
+}
+
+.yz-dir-copy {
+  align-self: center;
+  min-width: 0;
+}
+
+.yz-dir-name {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-s);
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  font-stretch: 76%;
+  font-weight: 880;
+  line-height: 1;
+  overflow-wrap: anywhere;
+  text-transform: uppercase;
+  transition: transform var(--motion-enter) var(--ease-emphasis);
+}
+
+.yz-dir-motif {
+  margin-top: 0.05em;
+  opacity: 0;
+  transform: translateX(-0.4rem);
+  transition:
+    opacity var(--motion-feedback) var(--ease-standard),
+    transform var(--motion-enter) var(--ease-emphasis);
+}
+
+.yz-dir-row:hover .yz-dir-name,
+.yz-dir-row:focus-within .yz-dir-name {
+  transform: translateX(var(--space-xs));
+}
+
+.yz-dir-row:hover .yz-dir-motif,
+.yz-dir-row:focus-within .yz-dir-motif {
+  opacity: 1;
+  transform: none;
+}
+
+.yz-dir-row:hover .yz-dir-num,
+.yz-dir-row:focus-within .yz-dir-num {
+  color: var(--ink-on-action);
+}
+
+.yz-dir-shot {
+  overflow: clip;
+}
+
+.yz-dir-shot img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.yz-dir-act {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-self: end;
+  gap: var(--space-m);
+  min-height: var(--size-control);
+  font-size: var(--text-body-small);
+  white-space: nowrap;
+}
+
+.yz-dir-forum {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--size-control);
+}
+
+.yz-dir-arrow {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+}
+
+.yz-dir-stretch {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+}
+
+.yz-dir-stretch:focus-visible {
+  outline: none;
+}
+
+/* Footer closes the archive; links remain plain and durable. */
+.yz-footer-grid {
+  padding-block: clamp(var(--space-3xl), 5vw, 5rem);
+}
+
+.yz-footer-mass {
+  font-size: clamp(3.5rem, 10vw, 9.375rem);
+  font-stretch: 70%;
+  font-weight: 950;
+  line-height: 0.85;
+}
+
+.yz-foot-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-xl);
+  margin-top: var(--space-xl);
+}
+
+.yz-foot-cols h3 {
+  margin-bottom: var(--space-xs);
+  color: var(--ink-on-inverse-muted);
+  font-size: var(--text-micro);
+  letter-spacing: var(--tracking-micro);
+  text-transform: uppercase;
+}
+
+.yz-foot-cols ul {
+  display: grid;
+  gap: var(--space-2xs);
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-body-small);
+}
+
+.yz-foot-cols a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--size-control);
+  color: inherit;
+  text-decoration: none;
+}
+
+.yz-foot-cols a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+
+.yz-foot-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-s) var(--space-xl);
+  align-items: center;
+  padding-top: var(--space-m);
+  margin-top: var(--space-xl);
+  border-top: var(--border-hairline) solid
+    color-mix(in srgb, var(--ink-on-inverse) 22%, transparent);
+  font-size: var(--text-small);
+}
+
+.yz-foot-meta-end {
+  margin-left: auto;
+}
+
+.yz-top {
+  position: fixed;
+  z-index: var(--z-sticky);
+  right: var(--space-l);
+  bottom: var(--space-l);
+  width: 3.25rem;
+  height: 3.25rem;
+  border: var(--border-hairline) solid var(--border-strong);
+  border-radius: var(--radius-none);
+  background: var(--ink-reading);
+  color: var(--foundation-page);
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(var(--space-xs));
+  transition:
+    opacity var(--motion-enter) var(--ease-standard),
+    transform var(--motion-enter) var(--ease-standard);
+}
+
+.yz-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+}
+
+.yz-top:hover {
+  background: var(--accent-focus);
+  color: var(--ink-on-focus);
+}

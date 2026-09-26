@@ -1,0 +1,35 @@
+@import "./tokens.css";
+
+.root-error {
+  width: min(100% - (2 * var(--page-margin)), 50rem);
+  padding-block: var(--space-5xl);
+  margin-inline: auto;
+  font-family: var(--font-body);
+}
+
+.root-error h1 {
+  font-family: var(--font-display);
+  font-size: var(--text-display);
+  font-stretch: 72%;
+  text-transform: uppercase;
+}
+
+.root-error p {
+  margin-top: var(--space-m);
+}
+
+.root-error a {
+  color: var(--accent-action-ink);
+  font-weight: 700;
+}
+
+.root-error-stack {
+  width: 100%;
+  padding: var(--space-m);
+  margin-top: var(--space-l);
+  overflow-x: auto;
+  border: var(--border-hairline) solid var(--border-strong);
+  background: var(--foundation-surface);
+  font-family: var(--font-mono);
+  font-size: var(--text-small);
+}

@@ -5,6 +5,25 @@ import { verifyPassword, verifyTOTP } from "~/lib/auth.server";
 import { getSessionId, createSessionCookie } from "~/lib/session.server";
 import { assertSameOrigin } from "~/lib/security.server";
 import { ThemeToggle } from "~/components/ThemeToggle";
+import stylesUrl from "~/styles/styles.css?url";
+
+export const links: Route.LinksFunction = () => [
+  { rel: "preconnect", href: "https://fonts.googleapis.com" },
+  {
+    rel: "preconnect",
+    href: "https://fonts.gstatic.com",
+    crossOrigin: "anonymous",
+  },
+  {
+    rel: "stylesheet",
+    href: "https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap",
+  },
+  {
+    rel: "stylesheet",
+    href: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css",
+  },
+  { rel: "stylesheet", href: stylesUrl },
+];
 
 export function meta() {
   return [{ title: "OsuDirect — Login" }];

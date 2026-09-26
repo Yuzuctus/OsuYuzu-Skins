@@ -3,6 +3,27 @@ import type { Route } from "./+types/osu-direct";
 import { BundleBanner } from "~/components/BundleBanner";
 import { getAdmin, cleanExpiredSessions } from "~/lib/db.server";
 import { requireAdminSession } from "~/lib/security.server";
+import stylesUrl from "~/styles/styles.css?url";
+import adminUrl from "~/styles/admin.css?url";
+
+export const links: Route.LinksFunction = () => [
+  { rel: "preconnect", href: "https://fonts.googleapis.com" },
+  {
+    rel: "preconnect",
+    href: "https://fonts.gstatic.com",
+    crossOrigin: "anonymous",
+  },
+  {
+    rel: "stylesheet",
+    href: "https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap",
+  },
+  {
+    rel: "stylesheet",
+    href: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css",
+  },
+  { rel: "stylesheet", href: stylesUrl },
+  { rel: "stylesheet", href: adminUrl },
+];
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const db = context.cloudflare.env.DB;
@@ -27,7 +48,11 @@ export default function AdminLayout({ loaderData }: Route.ComponentProps) {
   const { admin } = loaderData;
 
   return (
-    <div className="admin-layout">
+    <div
+      className="admin-layout"
+      data-page-tone="tool"
+      data-product-mode="admin"
+    >
       <aside className="admin-sidebar">
         <div className="admin-sidebar-header">
           <h2>
@@ -67,7 +92,7 @@ export default function AdminLayout({ loaderData }: Route.ComponentProps) {
           <a href="/" className="admin-nav-link" target="_blank">
             <i className="fas fa-external-link-alt"></i> Voir le site
           </a>
-          <Form method="post" action="/osu-direct/logout" style={{ margin: 0 }}>
+          <Form method="post" action="/osu-direct/logout" className="admin-logout-form">
             <button type="submit" className="admin-nav-link logout-btn">
               <i className="fas fa-sign-out-alt"></i> Déconnexion
             </button>

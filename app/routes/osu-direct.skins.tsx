@@ -113,7 +113,12 @@ function SortableItem({
       className={`drag-item ${isDragging ? "is-dragging" : ""}`}
     >
       <span className="drag-item-position">{position}</span>
-      <div className="drag-handle" {...attributes} {...listeners}>
+      <div
+        className="drag-handle"
+        aria-label={`Déplacer ${skin.name}`}
+        {...attributes}
+        {...listeners}
+      >
         <i className="fas fa-grip-vertical"></i>
       </div>
       <div className="drag-item-thumb">
@@ -129,7 +134,7 @@ function SortableItem({
               <span
                 key={tag.id}
                 className="skin-tag-badge"
-                style={{ backgroundColor: tag.color, fontSize: "0.65rem" }}
+                style={{ backgroundColor: tag.color }}
               >
                 {tag.name}
               </span>
@@ -141,6 +146,7 @@ function SortableItem({
         <Link
           to={`/osu-direct/skins/${skin.id}`}
           className="btn-secondary btn-small"
+          aria-label={`Modifier ${skin.name}`}
         >
           <i className="fas fa-edit"></i>
         </Link>
@@ -150,6 +156,7 @@ function SortableItem({
           <button
             type="submit"
             className="btn-danger btn-small"
+            aria-label={`Supprimer ${skin.name}`}
             disabled={fetcher.state !== "idle"}
             onClick={(e) => {
               if (!confirm(`Supprimer "${skin.name}"\u00A0?`)) {
@@ -213,7 +220,7 @@ export default function SkinsAdmin({
     <>
       <div className="admin-page-header">
         <h1>Gestion des Skins</h1>
-        <div style={{ display: "flex", gap: "0.5rem" }}>
+        <div className="admin-page-actions">
           {hasChanges && (
             <button onClick={saveOrder} className="btn-primary">
               <i className="fas fa-save"></i> Sauvegarder l'ordre
@@ -227,25 +234,14 @@ export default function SkinsAdmin({
 
       {actionData?.message && (
         <div
-          className={`toast ${actionData.success ? "toast-success" : "toast-error"}`}
-          style={{
-            position: "relative",
-            bottom: "auto",
-            right: "auto",
-            marginBottom: "1rem",
-          }}
+          className={`admin-notice ${actionData.success ? "admin-notice-success" : "admin-notice-error"}`}
+          role="status"
         >
           {actionData.message}
         </div>
       )}
 
-      <p
-        style={{
-          color: "var(--color-text-muted)",
-          marginBottom: "1rem",
-          fontSize: "0.9rem",
-        }}
-      >
+      <p className="admin-notice">
         <i className="fas fa-info-circle"></i> Glissez-déposez pour réordonner
         les skins. L'ordre ici est l'ordre d'affichage sur le site.
       </p>
@@ -268,14 +264,11 @@ export default function SkinsAdmin({
       </DndContext>
 
       {items.length === 0 && (
-        <div style={{ textAlign: "center", padding: "3rem 0" }}>
-          <p style={{ color: "var(--color-text-muted)", fontSize: "1.1rem" }}>
-            Aucun skin pour le moment.
-          </p>
+        <div className="admin-empty">
+          <p>Aucun skin pour le moment.</p>
           <Link
             to="/osu-direct/skins/new"
             className="btn-primary"
-            style={{ marginTop: "1rem", display: "inline-flex" }}
           >
             <i className="fas fa-plus"></i> Ajouter votre premier skin
           </Link>

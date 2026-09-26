@@ -1,0 +1,263 @@
+/* CUT × STRATA — public design tokens, v2.
+   Source of truth for Yuzuhub and OsuYuzu-Skins. Product repositories mirror
+   this file because they deploy independently; DESIGN_SYSTEM.md defines the
+   synchronization contract. Components consume semantic tokens, never the
+   primitive palette directly. */
+
+:root {
+  /* Primitive palette — raw pigments, never used from component CSS. */
+  --primitive-paper: #f2f4ed;
+  --primitive-paper-bright: #fafbf5;
+  --primitive-paper-shade: #e5ece1;
+  --primitive-charcoal: #15211c;
+  --primitive-charcoal-muted: #4c5d55;
+  --primitive-rule: #c4cfc2;
+  --primitive-night: #0d1311;
+  --primitive-night-raised: #131b18;
+  --primitive-night-soft: #1b2621;
+  --primitive-night-rule: #28382f;
+  --primitive-night-ink: #ebf2ec;
+  --primitive-night-muted: #a3b8ad;
+  --primitive-deep: #080c0b;
+
+  --primitive-mint: #46d096;
+  --primitive-mint-bright: #5fe0a6;
+  --primitive-mint-deep: #0b6b44;
+  --primitive-mint-pale: #8ff0c2;
+  --primitive-mint-wash: #d8f2e1;
+  --primitive-mint-wash-dark: #14382a;
+  --primitive-cyan: #35a5d6;
+  --primitive-cyan-bright: #5cbde9;
+  --primitive-cyan-deep: #0c5a80;
+  --primitive-cyan-pale: #9bdcf7;
+  --primitive-cyan-wash: #d7edf8;
+  --primitive-cyan-wash-dark: #123243;
+  --primitive-lemon: #f0c61e;
+  --primitive-lemon-bright: #f4d43f;
+  --primitive-lemon-deep: #6e5300;
+  --primitive-lemon-wash: #fbedba;
+  --primitive-lemon-wash-dark: #3a3110;
+  --primitive-blush: #efa2b2;
+  --primitive-blush-bright: #f0aebd;
+  --primitive-blush-deep: #8a2c41;
+  --primitive-blush-pale: #f2b9c6;
+  --primitive-blush-wash: #f8dee3;
+  --primitive-blush-wash-dark: #3a1f27;
+  --primitive-danger: #b4233d;
+  --primitive-danger-dark: #ff8fa3;
+
+  /* Semantic colour API. */
+  --foundation-page: var(--primitive-paper);
+  --foundation-surface: var(--primitive-paper-bright);
+  --foundation-surface-alt: var(--primitive-paper-shade);
+  --foundation-inverse: #0e1512;
+  --ink-reading: var(--primitive-charcoal);
+  --ink-secondary: var(--primitive-charcoal-muted);
+  --ink-on-inverse: #eff4ed;
+  --ink-on-action: #0c1f16;
+  --ink-on-tool: #08222f;
+  --ink-on-focus: #141a17;
+  --ink-on-emotion: #2b1119;
+  --ink-on-inverse-muted: #9db4a8;
+  --border-subtle: var(--primitive-rule);
+  --border-strong: var(--primitive-charcoal);
+
+  --accent-action: var(--primitive-mint);
+  --accent-action-ink: var(--primitive-mint-deep);
+  --accent-action-wash: var(--primitive-mint-wash);
+  --accent-tool: var(--primitive-cyan);
+  --accent-tool-ink: var(--primitive-cyan-deep);
+  --accent-tool-wash: var(--primitive-cyan-wash);
+  --accent-focus: var(--primitive-lemon);
+  --accent-focus-ink: var(--primitive-lemon-deep);
+  --accent-focus-wash: var(--primitive-lemon-wash);
+  --accent-emotion: var(--primitive-blush);
+  --accent-emotion-ink: var(--primitive-blush-deep);
+  --accent-emotion-wash: var(--primitive-blush-wash);
+  --focus-ring: var(--primitive-cyan-deep);
+
+  --state-success: var(--primitive-mint-deep);
+  --state-success-surface: var(--primitive-mint-wash);
+  --state-warning: var(--primitive-lemon-deep);
+  --state-warning-surface: var(--primitive-lemon-wash);
+  --state-danger: var(--primitive-danger);
+  --state-danger-surface: var(--primitive-blush-wash);
+
+  /* Typography. */
+  --font-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --font-text: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --font-func: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+  --text-micro: 0.71875rem;
+  --text-small: 0.8125rem;
+  --text-body-small: 0.90625rem;
+  --text-body: 1.0625rem;
+  --text-lead: clamp(1.125rem, 1.6vw + 0.875rem, 1.375rem);
+  --text-section: clamp(2.125rem, 4.6vw, 4rem);
+  --text-massive: clamp(4.5rem, 13.5vw, 13rem);
+  --leading-tight: 0.95;
+  --leading-display: 0.82;
+  --leading-body: 1.6;
+  --leading-reading: 1.5;
+  --tracking-micro: 0.14em;
+  --tracking-display: -0.02em;
+
+  /* Spacing, sizing and layout. */
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-s: 0.75rem;
+  --space-m: 1rem;
+  --space-l: 1.25rem;
+  --space-xl: 1.5rem;
+  --space-2xl: 2rem;
+  --space-3xl: 2.5rem;
+  --space-4xl: 3.25rem;
+  --space-5xl: 4rem;
+  --space-6xl: 6rem;
+  --size-control: 2.75rem;
+  --size-icon-s: 0.625rem;
+  --size-icon-m: 1.375rem;
+  --size-icon-l: 2rem;
+  --container-narrow: 45rem;
+  --container-reading: 55rem;
+  --container-max: 95rem;
+  --container-wide: 108rem;
+  --grid-gutter: 2rem;
+  --page-margin: clamp(1rem, 4vw, 2.5rem);
+  --breakpoint-phone: 390px;
+  --breakpoint-tablet: 820px;
+  --breakpoint-compact: 1024px;
+  --breakpoint-desktop: 1440px;
+  --breakpoint-wide: 1728px;
+
+  /* Shape, depth, motion and stacking. */
+  --cut-s: 1rem;
+  --cut-m: 1.625rem;
+  --cut-l: 2.75rem;
+  --radius-none: 0;
+  --radius-hairline: 2px;
+  --radius-round: 999px;
+  --border-hairline: 1px;
+  --border-focus: 3px;
+  --elevation-0: none;
+  --elevation-1: 0 1px 0 color-mix(in srgb, var(--border-strong) 22%, transparent);
+  --motion-feedback: 160ms;
+  --motion-enter: 240ms;
+  --motion-ambient: 500ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasis: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --z-base: 0;
+  --z-sticky: 20;
+  --z-overlay: 40;
+  --z-skip: 60;
+
+  /* Transitional aliases. Existing sites may spend these while migrating. */
+  --max: var(--container-max);
+  --gutter: var(--grid-gutter);
+  --margin: var(--page-margin);
+  --cut: var(--cut-m);
+  --cut-sm: var(--cut-s);
+  --cut-lg: var(--cut-l);
+  --page: var(--foundation-page);
+  --surface: var(--foundation-surface);
+  --surface-alt: var(--foundation-surface-alt);
+  --ink: var(--ink-reading);
+  --ink-muted: var(--ink-secondary);
+  --line: var(--border-subtle);
+  --line-strong: var(--border-strong);
+  --inverse: var(--foundation-inverse);
+  --inverse-ink: var(--ink-on-inverse);
+  --brand-mint: var(--accent-action);
+  --brand-mint-deep: var(--accent-action-ink);
+  --brand-mint-wash: var(--accent-action-wash);
+  --brand-cyan: var(--accent-tool);
+  --brand-cyan-deep: var(--accent-tool-ink);
+  --brand-cyan-wash: var(--accent-tool-wash);
+  --brand-lemon: var(--accent-focus);
+  --brand-lemon-deep: var(--accent-focus-ink);
+  --brand-lemon-wash: var(--accent-focus-wash);
+  --brand-blush: var(--accent-emotion);
+  --brand-blush-deep: var(--accent-emotion-ink);
+  --brand-blush-wash: var(--accent-emotion-wash);
+  --focus: var(--focus-ring);
+  --on-mint: var(--ink-on-action);
+  --on-cyan: var(--ink-on-tool);
+  --on-lemon: var(--ink-on-focus);
+  --on-blush: var(--ink-on-emotion);
+  --dark-muted: var(--ink-on-inverse-muted);
+  --band: var(--accent-action);
+
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --foundation-page: var(--primitive-night);
+  --foundation-surface: var(--primitive-night-raised);
+  --foundation-surface-alt: var(--primitive-night-soft);
+  --foundation-inverse: var(--primitive-deep);
+  --ink-reading: var(--primitive-night-ink);
+  --ink-secondary: var(--primitive-night-muted);
+  --ink-on-inverse: var(--primitive-night-ink);
+  --border-subtle: var(--primitive-night-rule);
+  --border-strong: var(--primitive-night-ink);
+  --accent-action: var(--primitive-mint-bright);
+  --accent-action-ink: var(--primitive-mint-pale);
+  --accent-action-wash: var(--primitive-mint-wash-dark);
+  --accent-tool: var(--primitive-cyan-bright);
+  --accent-tool-ink: var(--primitive-cyan-pale);
+  --accent-tool-wash: var(--primitive-cyan-wash-dark);
+  --accent-focus: var(--primitive-lemon-bright);
+  --accent-focus-ink: var(--primitive-lemon-bright);
+  --accent-focus-wash: var(--primitive-lemon-wash-dark);
+  --accent-emotion: var(--primitive-blush-bright);
+  --accent-emotion-ink: var(--primitive-blush-pale);
+  --accent-emotion-wash: var(--primitive-blush-wash-dark);
+  --focus-ring: var(--primitive-cyan-pale);
+  --state-success: var(--primitive-mint-pale);
+  --state-success-surface: var(--primitive-mint-wash-dark);
+  --state-warning: var(--primitive-lemon-bright);
+  --state-warning-surface: var(--primitive-lemon-wash-dark);
+  --state-danger: var(--primitive-danger-dark);
+  --state-danger-surface: var(--primitive-blush-wash-dark);
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --foundation-page: var(--primitive-night);
+    --foundation-surface: var(--primitive-night-raised);
+    --foundation-surface-alt: var(--primitive-night-soft);
+    --foundation-inverse: var(--primitive-deep);
+    --ink-reading: var(--primitive-night-ink);
+    --ink-secondary: var(--primitive-night-muted);
+    --ink-on-inverse: var(--primitive-night-ink);
+    --border-subtle: var(--primitive-night-rule);
+    --border-strong: var(--primitive-night-ink);
+    --accent-action: var(--primitive-mint-bright);
+    --accent-action-ink: var(--primitive-mint-pale);
+    --accent-action-wash: var(--primitive-mint-wash-dark);
+    --accent-tool: var(--primitive-cyan-bright);
+    --accent-tool-ink: var(--primitive-cyan-pale);
+    --accent-tool-wash: var(--primitive-cyan-wash-dark);
+    --accent-focus: var(--primitive-lemon-bright);
+    --accent-focus-ink: var(--primitive-lemon-bright);
+    --accent-focus-wash: var(--primitive-lemon-wash-dark);
+    --accent-emotion: var(--primitive-blush-bright);
+    --accent-emotion-ink: var(--primitive-blush-pale);
+    --accent-emotion-wash: var(--primitive-blush-wash-dark);
+    --focus-ring: var(--primitive-cyan-pale);
+    --state-success: var(--primitive-mint-pale);
+    --state-success-surface: var(--primitive-mint-wash-dark);
+    --state-warning: var(--primitive-lemon-bright);
+    --state-warning-surface: var(--primitive-lemon-wash-dark);
+    --state-danger: var(--primitive-danger-dark);
+    --state-danger-surface: var(--primitive-blush-wash-dark);
+    color-scheme: dark;
+  }
+}
+
+
+/* OsuYuzu-Skins collection-specific media measure. */
+:root {
+  --skin-preview-width: 15rem;
+}
+

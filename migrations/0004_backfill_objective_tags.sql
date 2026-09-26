@@ -1,0 +1,1 @@
+-- No-op retained for migration history. The public collection does not use tags.

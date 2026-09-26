@@ -1,104 +1,110 @@
-import { useEffect, useRef, useState } from "react";
+export type HeroArt = {
+  src: string;
+  artist: string;
+  url: string;
+  framing: "right-cutout" | "center-cutout" | "plate";
+};
 
-export const HERO_CHARACTERS = [
-  "/img/Characters/yuzuchibi1_nobg.png",
-  "/img/Characters/yuzuchibi1_nobg_nofog.png",
-  "/img/Characters/yuzuchibi2_nobg.png",
-  "/img/Characters/yuzuchibi3_nobg.png",
+export const HERO_CHARACTERS: HeroArt[] = [
+  {
+    src: "/img/Characters/yuzuchibi1_nobg_kourihase.png",
+    artist: "Kourihase",
+    url: "https://x.com/Kourihase",
+    framing: "right-cutout",
+  },
+  {
+    src: "/img/Characters/yuzuchibi1_nobg_nofog_kourihase.png",
+    artist: "Kourihase",
+    url: "https://x.com/Kourihase",
+    framing: "right-cutout",
+  },
+  {
+    src: "/img/Characters/yuzuchibi2_nobg_kourihase.png",
+    artist: "Kourihase",
+    url: "https://x.com/Kourihase",
+    framing: "center-cutout",
+  },
+  {
+    src: "/img/Characters/yuzuchibi3_nobg_kourihase.png",
+    artist: "Kourihase",
+    url: "https://x.com/Kourihase",
+    framing: "center-cutout",
+  },
+  {
+    src: "/img/Characters/vgentou7.2-ct-web_Mazuko.png",
+    artist: "Mazuko",
+    url: "https://vgen.co/Mazuko",
+    framing: "plate",
+  },
+  {
+    src: "/img/Characters/yuzuv2alt-web_kourihase.png",
+    artist: "Kourihase",
+    url: "https://x.com/Kourihase",
+    framing: "plate",
+  },
 ];
 
 type HeroProps = {
-  character: string;
+  character: HeroArt;
+  skinCount: number;
 };
 
-export function Hero({ character }: HeroProps) {
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const rafRef = useRef<number | null>(null);
-  const pendingOffsetRef = useRef({ x: 0, y: 0 });
-
-  function handleMouseMove(e: React.MouseEvent<HTMLElement>) {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 20;
-    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 20;
-    pendingOffsetRef.current = { x, y };
-
-    if (rafRef.current === null) {
-      rafRef.current = requestAnimationFrame(() => {
-        setOffset(pendingOffsetRef.current);
-        rafRef.current = null;
-      });
-    }
-  }
-
-  function handleMouseLeave() {
-    if (rafRef.current !== null) {
-      cancelAnimationFrame(rafRef.current);
-      rafRef.current = null;
-    }
-    setOffset({ x: 0, y: 0 });
-  }
-
-  useEffect(() => {
-    return () => {
-      if (rafRef.current !== null) {
-        cancelAnimationFrame(rafRef.current);
-      }
-    };
-  }, []);
-
+export function Hero({ character, skinCount }: HeroProps) {
   return (
-    <section
-      className="hero-section"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-    >
-      <div className="container hero-container">
-        <div className="hero-content">
-          <div className="hero-header">
-            <div className="logo-container">
-              <h1>
-                <span className="logo-text">Osu!</span>
-                <span className="logo-accent">Yuzu</span>
-              </h1>
-            </div>
+    <section className="yz-stratum yz-cover" aria-labelledby="t-home">
+      <div className="yz-wrap">
+        <div className="yz-cover-meta yz-micro">
+          <span>Collection personnelle</span>
+          <span>osu!standard</span>
+          <span>{skinCount} entrées</span>
+          <span className="yz-push-right">ordre de préférence · 2026</span>
+        </div>
+
+        <h1 id="t-home" className="yz-massive">
+          MES
+          <br />
+          SKINS<span className="yz-accent-mark">.</span>
+        </h1>
+
+        <div className="yz-grid yz-cover-body">
+          <div className="yz-s1-5">
+            <p className="yz-lead">
+              Mes skins osu!standard, classés par préférence.
+            </p>
+            <p className="yz-cover-link">
+              <a className="yz-plain-link" href="#t-main">
+              Voir le skin utilisé actuellement ↓
+              </a>
+            </p>
           </div>
 
-          <div className="hero-tag">
-            <i className="fas fa-gamepad"></i> Osu! Player
-          </div>
-          <h2 className="hero-title">
-            Hello, I'm <span className="hero-name">Yuzuctus</span>.
-          </h2>
-          <p className="hero-subtitle">
-            Voici ma collection personnelle de skins.
-          </p>
-          <div className="hero-buttons">
-            <a href="#skins-container" className="btn-primary">
-              <i className="fas fa-layer-group"></i> Mes Skins
-            </a>
-            <a href="/api/download-all" className="btn-primary">
-              <i className="fas fa-file-archive"></i> Tout télécharger (.zip)
-            </a>
-            <a href="#footer" className="btn-secondary">
-              <i className="fab fa-github"></i> Contact
-            </a>
-          </div>
-        </div>
-        <div className="hero-image">
-          <div className="hero-img-placeholder animate-float">
-            <img
-              src={character}
-              alt="Yuzuctus Character"
-              decoding="async"
-              loading="eager"
-              fetchPriority="high"
-              style={{
-                transform: `translate(${offset.x}px, ${offset.y}px)`,
-                transition: offset.x === 0 ? "transform 0.5s ease" : "none",
-              }}
-            />
+          <div className="yz-s9-12">
+            <figure className="yz-hero-art yz-cut">
+              <div className="yz-field">
+                <img
+                  className={`yz-art-${character.framing}`}
+                  src={character.src}
+                  alt={`Yuzu, personnage original — illustration de ${character.artist}`}
+                  decoding="async"
+                  loading="eager"
+                  fetchPriority="high"
+                  width="2000"
+                  height="2000"
+                />
+              </div>
+              <figcaption className="yz-credit">
+                Illustration :{" "}
+                <a href={character.url} target="_blank" rel="noopener noreferrer">
+                  {character.artist}
+                </a>
+              </figcaption>
+            </figure>
           </div>
         </div>
+
+        <p className="yz-colophon yz-micro">
+          Aperçus, crédits et téléchargements
+        </p>
       </div>
     </section>
   );

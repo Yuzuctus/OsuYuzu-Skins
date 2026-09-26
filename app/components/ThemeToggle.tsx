@@ -4,13 +4,22 @@ export function ThemeToggle() {
   const [theme, setTheme] = useState<"dark" | "light">("dark");
 
   useEffect(() => {
-    const saved = localStorage.getItem("theme");
-    if (saved === "light") {
+    const current =
+      document.documentElement.getAttribute("data-theme") === "light"
+        ? "light"
+        : "dark";
+    if (current === "light") {
       setTheme("light");
       document.documentElement.setAttribute("data-theme", "light");
+      document
+        .querySelector('meta[name="theme-color"]')
+        ?.setAttribute("content", "#f2f4ed");
     } else {
       setTheme("dark");
       document.documentElement.setAttribute("data-theme", "dark");
+      document
+        .querySelector('meta[name="theme-color"]')
+        ?.setAttribute("content", "#0d1311");
     }
   }, []);
 
@@ -18,6 +27,9 @@ export function ThemeToggle() {
     const next = theme === "dark" ? "light" : "dark";
     setTheme(next);
     document.documentElement.setAttribute("data-theme", next);
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute("content", next === "dark" ? "#0d1311" : "#f2f4ed");
     localStorage.setItem("theme", next);
   }
 
@@ -25,9 +37,10 @@ export function ThemeToggle() {
     <button
       className="theme-toggle-fixed"
       onClick={toggle}
-      aria-label="Toggle Theme"
+      aria-label={theme === "dark" ? "Passer en thème clair" : "Passer en thème sombre"}
+      aria-pressed={theme === "dark"}
     >
-      <i className={`fas ${theme === "dark" ? "fa-sun" : "fa-moon"}`}></i>
+      <span aria-hidden="true">{theme === "dark" ? "☀" : "◐"}</span>
     </button>
   );
 }

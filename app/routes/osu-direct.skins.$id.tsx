@@ -189,7 +189,7 @@ export default function EditSkin({
       </div>
 
       {actionData?.error && (
-        <div className="login-error" style={{ maxWidth: 700 }}>
+        <div className="login-error admin-form-error">
           {actionData.error}
         </div>
       )}

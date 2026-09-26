@@ -12,17 +12,19 @@ export function BackToTop() {
   }, []);
 
   function scrollToTop() {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
   }
 
   return (
     <button
-      id="back-to-top"
-      className={visible ? "visible" : ""}
+      className={`yz-top${visible ? " visible" : ""}`}
       onClick={scrollToTop}
-      aria-label="Back to Top"
+      aria-label="Haut de page"
     >
-      <i className="fas fa-arrow-up"></i>
+      ↑
     </button>
   );
 }

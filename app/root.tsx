@@ -8,27 +8,13 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
-import "./styles/styles.css";
-import "./styles/admin.css";
+import rootStylesUrl from "~/styles/root.css?url";
 
 export const links: Route.LinksFunction = () => [
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Nunito:wght@700;800&display=swap",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css",
-  },
   { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
   { rel: "apple-touch-icon", href: "/favicon.svg" },
   { rel: "manifest", href: "/manifest.json" },
+  { rel: "stylesheet", href: rootStylesUrl },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -37,7 +23,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#8CEFCD" />
+        <meta name="theme-color" content="#0E1512" />
         <meta
           name="google-site-verification"
           content="TaES03KbkWLutAmQcc_QLwMWPLjYTguUHQoTviS0PAQ"
@@ -47,7 +33,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {/* Anti-FOUC: apply saved theme before paint */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){var t=localStorage.getItem("theme");document.documentElement.setAttribute("data-theme",t==="light"?"light":"dark");if(history.scrollRestoration)history.scrollRestoration="manual";window.scrollTo(0,0)})()`,
+            __html: `(function(){var t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";try{var s=localStorage.getItem("theme");if(s==="light"||s==="dark")t=s}catch(e){}document.documentElement.setAttribute("data-theme",t);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",t==="dark"?"#0d1311":"#f2f4ed");if(history.scrollRestoration)history.scrollRestoration="manual";window.scrollTo(0,0)})()`,
           }}
         />
       </head>
@@ -65,15 +51,15 @@ export default function App() {
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-  let message = "Oops!";
-  let details = "An unexpected error occurred.";
+  let message = "Oups !";
+  let details = "Une erreur inattendue est survenue.";
   let stack: string | undefined;
 
   if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? "404" : "Error";
+    message = error.status === 404 ? "404" : "Erreur";
     details =
       error.status === 404
-        ? "The requested page could not be found."
+        ? "Cette page n'existe pas."
         : error.statusText || details;
   } else if (import.meta.env.DEV && error && error instanceof Error) {
     details = error.message;
@@ -81,27 +67,14 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main
-      style={{
-        paddingTop: "4rem",
-        padding: "1rem",
-        maxWidth: "800px",
-        margin: "0 auto",
-      }}
-    >
+    <main className="root-error">
       <h1>{message}</h1>
       <p>{details}</p>
+      <p>
+        <a href="/">Retour à la collection</a>
+      </p>
       {stack && (
-        <pre
-          style={{
-            width: "100%",
-            padding: "1rem",
-            overflowX: "auto",
-            background: "var(--color-surface)",
-            borderRadius: "8px",
-            fontSize: "0.85rem",
-          }}
-        >
+        <pre className="root-error-stack">
           <code>{stack}</code>
         </pre>
       )}

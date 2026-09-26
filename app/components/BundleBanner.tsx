@@ -238,26 +238,12 @@ export function BundleBanner() {
   }
 
   const stale = !status || status.stale;
-  const bannerStyle: React.CSSProperties = {
-    display: "flex",
-    alignItems: "center",
-    gap: "0.75rem",
-    flexWrap: "wrap",
-    padding: "0.75rem 1rem",
-    borderRadius: "0.5rem",
-    marginBottom: "1.25rem",
-    fontSize: "0.9rem",
-    border: `1px solid ${stale ? "#f59e0b" : "#10b981"}`,
-    background: stale ? "rgba(245, 158, 11, 0.08)" : "rgba(16, 185, 129, 0.08)",
-  };
-
   return (
-    <div style={bannerStyle} role="status">
+    <div className="bundle-status" data-state={stale ? "stale" : "ready"} role="status">
       <i
         className={`fas ${stale ? "fa-triangle-exclamation" : "fa-circle-check"}`}
-        style={{ color: stale ? "#f59e0b" : "#10b981" }}
       />
-      <div style={{ flex: "1 1 auto", minWidth: 220 }}>
+      <div className="bundle-status-main">
         {statusError ? (
           <span>{statusError}</span>
         ) : !status ? (
@@ -276,23 +262,19 @@ export function BundleBanner() {
             {formatBytes(status.size)}, générée le {formatDate(status.builtAt)}.
           </span>
         )}
-        {rebuildError && (
-          <div style={{ color: "#ef4444", marginTop: "0.25rem" }}>
-            {rebuildError}
-          </div>
-        )}
+        {rebuildError && <div className="bundle-status-error">{rebuildError}</div>}
         {phase.name === "fetch" && (
-          <div style={{ marginTop: "0.25rem" }}>
+          <div className="bundle-status-detail">
             Téléchargement des skins… {phase.done}/{phase.total}
           </div>
         )}
         {phase.name === "zip" && (
-          <div style={{ marginTop: "0.25rem" }}>
+          <div className="bundle-status-detail">
             Compression… {Math.round(phase.percent)} %
           </div>
         )}
         {phase.name === "upload" && (
-          <div style={{ marginTop: "0.25rem" }}>
+          <div className="bundle-status-detail">
             Envoi vers le stockage… {phase.doneParts}/{phase.totalParts} parts
             ({phase.doneMB.toFixed(1)} Mo)
           </div>

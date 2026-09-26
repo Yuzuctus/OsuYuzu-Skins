@@ -26,24 +26,24 @@ export async function action({ request, context }: Route.ActionArgs) {
 
     const id = `tag-${name.toLowerCase().replace(/[^a-z0-9]/g, "-")}`;
     try {
-      await createTag(db, { id, name, color: color || "#34d399" });
+      await createTag(db, { id, name, color: color || "#46D096" });
     } catch {
       return { error: "Un tag avec ce nom existe déjà." };
     }
-    return { success: true, message: `Tag "${name}" créé\u00A0!` };
+    return { success: true, message: `Tag "${name}" créé !` };
   }
 
   if (intent === "update") {
     const tagId = formData.get("tagId") as string;
     const color = formData.get("color") as string;
     await updateTag(db, tagId, { color });
-    return { success: true, message: "Couleur mise à jour\u00A0!" };
+    return { success: true, message: "Couleur mise à jour !" };
   }
 
   if (intent === "delete") {
     const tagId = formData.get("tagId") as string;
     await deleteTag(db, tagId);
-    return { success: true, message: "Tag supprimé\u00A0!" };
+    return { success: true, message: "Tag supprimé !" };
   }
 
   return { error: "Action inconnue" };
@@ -55,7 +55,7 @@ export default function TagsAdmin({
 }: Route.ComponentProps) {
   const { tags } = loaderData;
   const [newName, setNewName] = useState("");
-  const [newColor, setNewColor] = useState("#34d399");
+  const [newColor, setNewColor] = useState("#46D096");
   const fetcher = useFetcher();
 
   return (
@@ -66,29 +66,20 @@ export default function TagsAdmin({
 
       {actionData?.message && (
         <div
-          className={`toast ${actionData.success ? "toast-success" : "toast-error"}`}
-          style={{
-            position: "relative",
-            bottom: "auto",
-            right: "auto",
-            marginBottom: "1rem",
-          }}
+          className={`admin-notice ${actionData.success ? "admin-notice-success" : "admin-notice-error"}`}
+          role="status"
         >
           {actionData.message}
         </div>
       )}
       {actionData?.error && (
-        <div className="login-error" style={{ maxWidth: 500 }}>
+        <div className="login-error admin-form-error">
           {actionData.error}
         </div>
       )}
 
       {/* Add new tag */}
-      <Form
-        method="post"
-        className="tag-add-form"
-        style={{ marginBottom: "2rem", maxWidth: 500 }}
-      >
+      <Form method="post" className="tag-add-form">
         <input type="hidden" name="intent" value="create" />
         <input
           className="form-input"
@@ -105,7 +96,7 @@ export default function TagsAdmin({
           value={newColor}
           onChange={(e) => setNewColor(e.target.value)}
           className="tag-manager-color"
-          style={{ width: 40, height: 40, border: "none", cursor: "pointer" }}
+          aria-label="Couleur du nouveau tag"
         />
         <button type="submit" className="btn-primary btn-small">
           <i className="fas fa-plus"></i> Ajouter
@@ -116,10 +107,7 @@ export default function TagsAdmin({
       <div className="tag-manager-list">
         {tags.map((tag) => (
           <div key={tag.id} className="tag-manager-item">
-            <fetcher.Form
-              method="post"
-              style={{ display: "flex", alignItems: "center" }}
-            >
+            <fetcher.Form method="post" className="tag-color-form">
               <input type="hidden" name="intent" value="update" />
               <input type="hidden" name="tagId" value={tag.id} />
               <input
@@ -127,7 +115,7 @@ export default function TagsAdmin({
                 name="color"
                 defaultValue={tag.color}
                 className="tag-manager-color"
-                style={{ width: 32, height: 32 }}
+                aria-label={`Couleur du tag ${tag.name}`}
                 onChange={(e) => {
                   // Auto-submit on color change
                   const form = e.target.closest("form");
@@ -147,12 +135,13 @@ export default function TagsAdmin({
               {tag.name}
             </span>
 
-            <Form method="post" style={{ marginLeft: "auto" }}>
+            <Form method="post" className="tag-delete-form">
               <input type="hidden" name="intent" value="delete" />
               <input type="hidden" name="tagId" value={tag.id} />
               <button
                 type="submit"
                 className="btn-danger btn-small"
+                aria-label={`Supprimer le tag ${tag.name}`}
                 onClick={(e) => {
                   if (!confirm(`Supprimer le tag "${tag.name}"\u00A0?`)) {
                     e.preventDefault();
@@ -167,14 +156,8 @@ export default function TagsAdmin({
       </div>
 
       {tags.length === 0 && (
-        <p
-          style={{
-            color: "var(--color-text-muted)",
-            textAlign: "center",
-            padding: "2rem 0",
-          }}
-        >
-          Aucun tag créé. Ajoutez-en un ci-dessus\u00A0!
+        <p className="admin-empty">
+          Aucun tag créé. Ajoutez-en un ci-dessus !
         </p>
       )}
     </>

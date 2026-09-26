@@ -30,9 +30,9 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
         </div>
       </div>
 
-      <div style={{ marginTop: "2rem" }}>
-        <h3 style={{ marginBottom: "1rem" }}>Actions rapides</h3>
-        <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+      <div className="admin-section">
+        <h3 className="admin-section-title">Actions rapides</h3>
+        <div className="admin-quick-actions">
           <Link to="/osu-direct/skins/new" className="btn-primary">
             <i className="fas fa-plus"></i> Ajouter un skin
           </Link>
