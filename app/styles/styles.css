@@ -1,8 +1,7 @@
 @import "./tokens.css";
 
 /* Shared application foundation for the protected osu! collection tools.
-   Public collection composition lives in skins-system.css; this file supplies
-   the same tokens, typography, controls, and authentication surfaces. */
+   Public collection composition lives in skins-agrume.css. */
 
 *,
 *::before,
@@ -60,7 +59,7 @@ h2,
 h3,
 h4 {
   font-family: var(--font-display);
-  font-weight: 850;
+  font-weight: 800;
   line-height: var(--leading-tight);
   text-wrap: balance;
 }
@@ -76,7 +75,7 @@ h4 {
 }
 
 .logo-text {
-  font-weight: 950;
+  font-weight: 800;
 }
 
 .logo-accent {
@@ -96,7 +95,7 @@ h4 {
   border-radius: var(--radius-none);
   cursor: pointer;
   font-size: var(--text-body-small);
-  font-weight: 700;
+  font-weight: 500;
   text-decoration: none;
   transition:
     background-color var(--motion-feedback) var(--ease-standard),
@@ -106,22 +105,15 @@ h4 {
 
 .btn-primary {
   border-color: transparent;
-  background: var(--accent-action);
-  color: var(--ink-on-action);
-  clip-path: polygon(
-    0 0,
-    100% 0,
-    100% calc(100% - var(--cut-s)),
-    calc(100% - var(--cut-s)) 100%,
-    0 100%
-  );
-  font-family: var(--font-display);
+  background: var(--ink-reading);
+  color: var(--foundation-page);
+  font-family: var(--font-func);
   text-transform: uppercase;
 }
 
 .btn-primary:hover {
-  background: var(--accent-focus);
-  color: var(--ink-on-focus);
+  background: var(--accent-action);
+  color: var(--ink-on-action);
 }
 
 .btn-secondary {
@@ -180,8 +172,8 @@ h4 {
 }
 
 .theme-toggle-fixed:hover {
-  background: var(--accent-focus);
-  color: var(--ink-on-focus);
+  background: var(--foundation-surface);
+  color: var(--ink-reading);
 }
 
 .form-group {

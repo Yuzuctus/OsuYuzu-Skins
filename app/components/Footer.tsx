@@ -1,7 +1,7 @@
 export function Footer() {
   return (
-    <footer id="footer" className="yz-stratum dark" aria-label="Pied de page">
-      <div className="yz-wrap yz-footer-grid">
+    <footer id="footer" className="ag-footer skins-footer" aria-label="Pied de page">
+      <div className="ag-container skins-footer__inner">
         <p className="yz-footer-mass">
           OSU!
           <br />

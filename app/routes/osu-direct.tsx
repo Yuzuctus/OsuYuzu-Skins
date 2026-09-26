@@ -1,28 +1,17 @@
 import { Outlet, NavLink, redirect, Form } from "react-router";
 import type { Route } from "./+types/osu-direct";
 import { BundleBanner } from "~/components/BundleBanner";
+import { ThemeToggle } from "~/components/ThemeToggle";
 import { getAdmin, cleanExpiredSessions } from "~/lib/db.server";
 import { requireAdminSession } from "~/lib/security.server";
 import stylesUrl from "~/styles/styles.css?url";
 import adminUrl from "~/styles/admin.css?url";
+import agrumeAdminUrl from "~/styles/admin-agrume.css?url";
 
 export const links: Route.LinksFunction = () => [
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css",
-  },
   { rel: "stylesheet", href: stylesUrl },
   { rel: "stylesheet", href: adminUrl },
+  { rel: "stylesheet", href: agrumeAdminUrl },
 ];
 
 export async function loader({ request, context }: Route.LoaderArgs) {
@@ -60,7 +49,7 @@ export default function AdminLayout({ loaderData }: Route.ComponentProps) {
             <span className="logo-accent">Direct</span>
           </h2>
           <span className="admin-badge">
-            <i className="fas fa-shield-halved"></i> Admin
+            Admin
           </span>
         </div>
         <nav className="admin-nav">
@@ -71,7 +60,7 @@ export default function AdminLayout({ loaderData }: Route.ComponentProps) {
               `admin-nav-link ${isActive ? "active" : ""}`
             }
           >
-            <i className="fas fa-home"></i> Dashboard
+            Dashboard
           </NavLink>
           <NavLink
             to="/osu-direct/skins"
@@ -79,7 +68,7 @@ export default function AdminLayout({ loaderData }: Route.ComponentProps) {
               `admin-nav-link ${isActive ? "active" : ""}`
             }
           >
-            <i className="fas fa-palette"></i> Skins
+            Skins
           </NavLink>
           <NavLink
             to="/osu-direct/tags"
@@ -87,17 +76,18 @@ export default function AdminLayout({ loaderData }: Route.ComponentProps) {
               `admin-nav-link ${isActive ? "active" : ""}`
             }
           >
-            <i className="fas fa-tags"></i> Tags
+            Tags
           </NavLink>
           <a href="/" className="admin-nav-link" target="_blank">
-            <i className="fas fa-external-link-alt"></i> Voir le site
+            Voir le site
           </a>
           <Form method="post" action="/osu-direct/logout" className="admin-logout-form">
             <button type="submit" className="admin-nav-link logout-btn">
-              <i className="fas fa-sign-out-alt"></i> Déconnexion
+              Déconnexion
             </button>
           </Form>
         </nav>
+        <ThemeToggle inline />
       </aside>
       <main className="admin-main">
         <BundleBanner />

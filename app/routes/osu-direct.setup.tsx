@@ -12,23 +12,11 @@ import { assertSameOrigin } from "~/lib/security.server";
 import { ThemeToggle } from "~/components/ThemeToggle";
 import { QRCodeSVG } from "qrcode.react";
 import stylesUrl from "~/styles/styles.css?url";
+import agrumeAdminUrl from "~/styles/admin-agrume.css?url";
 
 export const links: Route.LinksFunction = () => [
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css",
-  },
   { rel: "stylesheet", href: stylesUrl },
+  { rel: "stylesheet", href: agrumeAdminUrl },
 ];
 
 export function meta() {
@@ -138,7 +126,7 @@ export default function SetupPage({
             Configuration initiale du compte admin
           </p>
 
-          {error && <div className="login-error">{error}</div>}
+          {error && <div className="login-error" role="alert">{error}</div>}
 
           <Form method="post">
             <div className="form-group">
@@ -223,11 +211,11 @@ export default function SetupPage({
             >
               {isSubmitting ? (
                 <>
-                  <i className="fas fa-spinner fa-spin"></i> Création...
+                  Création...
                 </>
               ) : (
                 <>
-                  <i className="fas fa-user-shield"></i> Créer le compte admin
+                  Créer le compte admin
                 </>
               )}
             </button>

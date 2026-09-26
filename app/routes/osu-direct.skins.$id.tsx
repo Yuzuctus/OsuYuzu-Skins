@@ -182,14 +182,14 @@ export default function EditSkin({
   return (
     <>
       <div className="admin-page-header">
-        <h1>Modifier\u00A0: {skin.name}</h1>
+        <h1>Modifier : {skin.name}</h1>
         <Link to="/osu-direct/skins" className="btn-secondary">
-          <i className="fas fa-arrow-left"></i> Retour
+          Retour
         </Link>
       </div>
 
       {actionData?.error && (
-        <div className="login-error admin-form-error">
+        <div className="login-error admin-form-error" role="alert">
           {actionData.error}
         </div>
       )}
@@ -213,7 +213,16 @@ export default function EditSkin({
           <label className="form-label">Image de preview</label>
           <div
             className="file-upload-zone"
+            role="button"
+            tabIndex={0}
+            aria-label="Changer l'image de preview"
             onClick={() => imageInputRef.current?.click()}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                imageInputRef.current?.click();
+              }
+            }}
           >
             {imagePreview ? (
               <div className="file-upload-preview">
@@ -221,7 +230,6 @@ export default function EditSkin({
               </div>
             ) : (
               <>
-                <i className="fas fa-image"></i>
                 <p>Cliquez pour changer l'image</p>
               </>
             )}
@@ -233,6 +241,7 @@ export default function EditSkin({
             accept="image/*"
             onChange={handleImageChange}
             className="visually-hidden"
+            tabIndex={-1}
           />
           {imagePreview && (
             <p className="form-hint">
@@ -245,16 +254,23 @@ export default function EditSkin({
           <label className="form-label">Fichier skin</label>
           <div
             className="file-upload-zone"
+            role="button"
+            tabIndex={0}
+            aria-label="Changer le fichier skin"
             onClick={() => skinInputRef.current?.click()}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                skinInputRef.current?.click();
+              }
+            }}
           >
             {skinFileName ? (
               <div className="file-upload-info">
-                <i className="fas fa-file-archive"></i>
                 <span>{skinFileName}</span>
               </div>
             ) : (
               <>
-                <i className="fas fa-file-upload"></i>
                 <p>Cliquez pour ajouter/changer le fichier skin</p>
               </>
             )}
@@ -266,6 +282,7 @@ export default function EditSkin({
             accept=".osk,.zip,.rar,.7z"
             onChange={handleSkinFileChange}
             className="visually-hidden"
+            tabIndex={-1}
           />
         </div>
 
@@ -331,11 +348,11 @@ export default function EditSkin({
           <button type="submit" className="btn-primary" disabled={isSubmitting}>
             {isSubmitting ? (
               <>
-                <i className="fas fa-spinner fa-spin"></i> Mise à jour...
+                Mise à jour...
               </>
             ) : (
               <>
-                <i className="fas fa-save"></i> Sauvegarder
+                Sauvegarder
               </>
             )}
           </button>

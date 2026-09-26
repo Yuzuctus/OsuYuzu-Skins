@@ -1,17 +1,25 @@
 @import "./tokens.css";
 
+body { margin: 0; min-height: 100svh; background: var(--foundation-page); color: var(--ink-reading); font: 400 1rem/1.5 var(--font-text); }
+
 .root-error {
   width: min(100% - (2 * var(--page-margin)), 50rem);
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   padding-block: var(--space-5xl);
   margin-inline: auto;
   font-family: var(--font-body);
 }
 
 .root-error h1 {
+  padding-bottom: var(--space-l);
+  border-bottom: 2px solid var(--border-strong);
   font-family: var(--font-display);
-  font-size: var(--text-display);
-  font-stretch: 72%;
-  text-transform: uppercase;
+  font-size: clamp(6rem, 20vw, 11rem);
+  font-weight: 800;
+  line-height: .82;
 }
 
 .root-error p {
@@ -19,9 +27,15 @@
 }
 
 .root-error a {
-  color: var(--accent-action-ink);
-  font-weight: 700;
+  color: var(--ink-reading);
+  font: 500 .75rem/1.4 var(--font-func);
+  letter-spacing: .04em;
+  text-decoration: none;
+  text-transform: uppercase;
+  background: linear-gradient(var(--marker), var(--marker)) left bottom / 38% .65em no-repeat;
+  transition: background-size 220ms var(--ease-standard);
 }
+.root-error a:hover, .root-error a:focus-visible { background-size: 100% .65em; }
 
 .root-error-stack {
   width: 100%;

@@ -240,9 +240,7 @@ export function BundleBanner() {
   const stale = !status || status.stale;
   return (
     <div className="bundle-status" data-state={stale ? "stale" : "ready"} role="status">
-      <i
-        className={`fas ${stale ? "fa-triangle-exclamation" : "fa-circle-check"}`}
-      />
+      <span aria-hidden="true" className="bundle-status-symbol">{stale ? "!" : "✓"}</span>
       <div className="bundle-status-main">
         {statusError ? (
           <span>{statusError}</span>
@@ -286,9 +284,6 @@ export function BundleBanner() {
         onClick={rebuild}
         disabled={rebuilding}
       >
-        <i
-          className={`fas ${rebuilding ? "fa-spinner fa-spin" : "fa-rotate"}`}
-        ></i>{" "}
         {rebuilding ? "Reconstruction…" : "Reconstruire l'archive"}
       </button>
     </div>

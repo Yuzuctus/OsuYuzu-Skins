@@ -1,110 +1,47 @@
-export type HeroArt = {
-  src: string;
-  artist: string;
-  url: string;
-  framing: "right-cutout" | "center-cutout" | "plate";
-};
-
-export const HERO_CHARACTERS: HeroArt[] = [
-  {
-    src: "/img/Characters/yuzuchibi1_nobg_kourihase.png",
-    artist: "Kourihase",
-    url: "https://x.com/Kourihase",
-    framing: "right-cutout",
-  },
-  {
-    src: "/img/Characters/yuzuchibi1_nobg_nofog_kourihase.png",
-    artist: "Kourihase",
-    url: "https://x.com/Kourihase",
-    framing: "right-cutout",
-  },
-  {
-    src: "/img/Characters/yuzuchibi2_nobg_kourihase.png",
-    artist: "Kourihase",
-    url: "https://x.com/Kourihase",
-    framing: "center-cutout",
-  },
-  {
-    src: "/img/Characters/yuzuchibi3_nobg_kourihase.png",
-    artist: "Kourihase",
-    url: "https://x.com/Kourihase",
-    framing: "center-cutout",
-  },
-  {
-    src: "/img/Characters/vgentou7.2-ct-web_Mazuko.png",
-    artist: "Mazuko",
-    url: "https://vgen.co/Mazuko",
-    framing: "plate",
-  },
-  {
-    src: "/img/Characters/yuzuv2alt-web_kourihase.png",
-    artist: "Kourihase",
-    url: "https://x.com/Kourihase",
-    framing: "plate",
-  },
-];
-
 type HeroProps = {
-  character: HeroArt;
   skinCount: number;
 };
 
-export function Hero({ character, skinCount }: HeroProps) {
+export function Hero({ skinCount }: HeroProps) {
   return (
-    <section className="yz-stratum yz-cover" aria-labelledby="t-home">
-      <div className="yz-wrap">
-        <div className="yz-cover-meta yz-micro">
-          <span>Collection personnelle</span>
-          <span>osu!standard</span>
-          <span>{skinCount} entrées</span>
-          <span className="yz-push-right">ordre de préférence · 2026</span>
-        </div>
-
-        <h1 id="t-home" className="yz-massive">
-          MES
-          <br />
-          SKINS<span className="yz-accent-mark">.</span>
-        </h1>
-
-        <div className="yz-grid yz-cover-body">
-          <div className="yz-s1-5">
-            <p className="yz-lead">
-              Mes skins osu!standard, classés par préférence.
-            </p>
-            <p className="yz-cover-link">
-              <a className="yz-plain-link" href="#t-main">
-              Voir le skin utilisé actuellement ↓
+    <section className="skins-hero" aria-labelledby="t-home">
+      <div className="ag-container">
+        <div className="ag-hero">
+          <div className="ag-hero__copy">
+            <p className="ag-label">osu!standard · {skinCount} {skinCount === 1 ? "entrée" : "entrées"}</p>
+            <h1 id="t-home" className="ag-hero__title skins-hero__title">
+              <span>MES</span>
+              <span className="ag-hero__accent">SKINS</span>
+              <span>OSU</span>
+            </h1>
+            <p className="ag-hero__lead">Les skins que j’utilise vraiment quand je joue. Pioche dedans, c’est fait pour jouer.</p>
+            <div className="ag-hero__actions">
+              <a className="ag-action ag-action--solid" href="#collection">
+                <span>Voir la collection ↓</span>
               </a>
-            </p>
+            </div>
+            <p className="ag-label skins-hero__colophon">Aperçus, crédits et téléchargements</p>
           </div>
-
-          <div className="yz-s9-12">
-            <figure className="yz-hero-art yz-cut">
-              <div className="yz-field">
-                <img
-                  className={`yz-art-${character.framing}`}
-                  src={character.src}
-                  alt={`Yuzu, personnage original — illustration de ${character.artist}`}
-                  decoding="async"
-                  loading="eager"
-                  fetchPriority="high"
-                  width="2000"
-                  height="2000"
-                />
-              </div>
-              <figcaption className="yz-credit">
-                Illustration :{" "}
-                <a href={character.url} target="_blank" rel="noopener noreferrer">
-                  {character.artist}
-                </a>
-              </figcaption>
-            </figure>
-          </div>
+          <figure className="ag-hero__art skins-hero__art">
+            <div className="skins-hero__shape" aria-hidden="true" />
+            <img
+              className="skins-hero__image"
+              src="/img/Characters/vgentou7.2-ct-web_Mazuko.png"
+              alt="Portrait illustré de Yuzu par Mazuko"
+              decoding="async"
+              loading="eager"
+              fetchPriority="high"
+              width="1200"
+              height="1200"
+            />
+            <figcaption className="skins-hero__credit">
+              Illustration par{" "}
+              <a href="https://vgen.co/Mazuko" target="_blank" rel="noopener noreferrer">
+                Mazuko
+              </a>
+            </figcaption>
+          </figure>
         </div>
-
-        <p className="yz-colophon yz-micro">
-          Aperçus, crédits et téléchargements
-        </p>
       </div>
     </section>
   );

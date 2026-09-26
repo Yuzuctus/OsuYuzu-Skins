@@ -119,7 +119,7 @@ function SortableItem({
         {...attributes}
         {...listeners}
       >
-        <i className="fas fa-grip-vertical"></i>
+        <span aria-hidden="true">↕</span>
       </div>
       <div className="drag-item-thumb">
         {skin.image_key && (
@@ -134,7 +134,7 @@ function SortableItem({
               <span
                 key={tag.id}
                 className="skin-tag-badge"
-                style={{ backgroundColor: tag.color }}
+                style={{ borderLeftColor: tag.color }}
               >
                 {tag.name}
               </span>
@@ -148,7 +148,7 @@ function SortableItem({
           className="btn-secondary btn-small"
           aria-label={`Modifier ${skin.name}`}
         >
-          <i className="fas fa-edit"></i>
+          Modifier
         </Link>
         <fetcher.Form method="post">
           <input type="hidden" name="intent" value="delete" />
@@ -164,9 +164,7 @@ function SortableItem({
               }
             }}
           >
-            <i
-              className={`fas ${fetcher.state !== "idle" ? "fa-spinner fa-spin" : "fa-trash"}`}
-            ></i>
+            {fetcher.state !== "idle" ? "Suppression..." : "Supprimer"}
           </button>
         </fetcher.Form>
       </div>
@@ -223,11 +221,11 @@ export default function SkinsAdmin({
         <div className="admin-page-actions">
           {hasChanges && (
             <button onClick={saveOrder} className="btn-primary">
-              <i className="fas fa-save"></i> Sauvegarder l'ordre
+              Sauvegarder l'ordre
             </button>
           )}
           <Link to="/osu-direct/skins/new" className="btn-primary">
-            <i className="fas fa-plus"></i> Ajouter un skin
+            Ajouter un skin
           </Link>
         </div>
       </div>
@@ -241,27 +239,29 @@ export default function SkinsAdmin({
         </div>
       )}
 
-      <p className="admin-notice">
-        <i className="fas fa-info-circle"></i> Glissez-déposez pour réordonner
-        les skins. L'ordre ici est l'ordre d'affichage sur le site.
-      </p>
-
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
-        <SortableContext
-          items={items.map((s) => s.id)}
-          strategy={verticalListSortingStrategy}
-        >
-          <div className="drag-list">
-            {items.map((skin, index) => (
-              <SortableItem key={skin.id} skin={skin} position={index + 1} />
-            ))}
-          </div>
-        </SortableContext>
-      </DndContext>
+      {items.length > 0 && (
+        <>
+          <p className="admin-notice">
+            Glissez-déposez pour réordonner les skins. L'ordre ici est l'ordre d'affichage sur le site.
+          </p>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={items.map((s) => s.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="drag-list">
+                {items.map((skin, index) => (
+                  <SortableItem key={skin.id} skin={skin} position={index + 1} />
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
+        </>
+      )}
 
       {items.length === 0 && (
         <div className="admin-empty">
@@ -270,7 +270,7 @@ export default function SkinsAdmin({
             to="/osu-direct/skins/new"
             className="btn-primary"
           >
-            <i className="fas fa-plus"></i> Ajouter votre premier skin
+            Ajouter votre premier skin
           </Link>
         </div>
       )}

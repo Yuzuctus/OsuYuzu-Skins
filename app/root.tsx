@@ -23,7 +23,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#0E1512" />
+        <meta name="theme-color" content="#1c2721" />
         <meta
           name="google-site-verification"
           content="TaES03KbkWLutAmQcc_QLwMWPLjYTguUHQoTviS0PAQ"
@@ -33,7 +33,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {/* Anti-FOUC: apply saved theme before paint */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){var t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";try{var s=localStorage.getItem("theme");if(s==="light"||s==="dark")t=s}catch(e){}document.documentElement.setAttribute("data-theme",t);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",t==="dark"?"#0d1311":"#f2f4ed");if(history.scrollRestoration)history.scrollRestoration="manual";window.scrollTo(0,0)})()`,
+            __html: `(function(){var t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";try{var s=localStorage.getItem("theme");if(s==="light"||s==="dark")t=s}catch(e){}document.documentElement.setAttribute("data-theme",t);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",t==="dark"?"#1c2721":"#fcf7ee");if(history.scrollRestoration)history.scrollRestoration="manual";window.scrollTo(0,0)})()`,
           }}
         />
       </head>

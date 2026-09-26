@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export function ThemeToggle() {
+export function ThemeToggle({ inline = false }: { inline?: boolean }) {
   const [theme, setTheme] = useState<"dark" | "light">("dark");
 
   useEffect(() => {
@@ -13,13 +13,13 @@ export function ThemeToggle() {
       document.documentElement.setAttribute("data-theme", "light");
       document
         .querySelector('meta[name="theme-color"]')
-        ?.setAttribute("content", "#f2f4ed");
+        ?.setAttribute("content", "#fcf7ee");
     } else {
       setTheme("dark");
       document.documentElement.setAttribute("data-theme", "dark");
       document
         .querySelector('meta[name="theme-color"]')
-        ?.setAttribute("content", "#0d1311");
+        ?.setAttribute("content", "#1c2721");
     }
   }, []);
 
@@ -29,13 +29,13 @@ export function ThemeToggle() {
     document.documentElement.setAttribute("data-theme", next);
     document
       .querySelector('meta[name="theme-color"]')
-      ?.setAttribute("content", next === "dark" ? "#0d1311" : "#f2f4ed");
+      ?.setAttribute("content", next === "dark" ? "#1c2721" : "#fcf7ee");
     localStorage.setItem("theme", next);
   }
 
   return (
     <button
-      className="theme-toggle-fixed"
+      className={inline ? "theme-toggle-inline" : "theme-toggle-fixed"}
       onClick={toggle}
       aria-label={theme === "dark" ? "Passer en thème clair" : "Passer en thème sombre"}
       aria-pressed={theme === "dark"}

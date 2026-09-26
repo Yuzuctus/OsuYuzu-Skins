@@ -165,12 +165,12 @@ export default function NewSkin({
       <div className="admin-page-header">
         <h1>Ajouter un skin</h1>
         <Link to="/osu-direct/skins" className="btn-secondary">
-          <i className="fas fa-arrow-left"></i> Retour
+          Retour
         </Link>
       </div>
 
       {actionData?.error && (
-        <div className="login-error admin-form-error">
+        <div className="login-error admin-form-error" role="alert">
           {actionData.error}
         </div>
       )}
@@ -187,7 +187,7 @@ export default function NewSkin({
             name="name"
             required
             autoFocus
-            placeholder="ex\u00A0: XooMoon - Blue trail Updated"
+            placeholder="ex. : XooMoon - Blue trail Updated"
           />
         </div>
 
@@ -195,7 +195,16 @@ export default function NewSkin({
           <label className="form-label">Image de preview</label>
           <div
             className="file-upload-zone"
+            role="button"
+            tabIndex={0}
+            aria-label="Choisir une image de preview"
             onClick={() => imageInputRef.current?.click()}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                imageInputRef.current?.click();
+              }
+            }}
           >
             {imagePreview ? (
               <div className="file-upload-preview">
@@ -203,7 +212,6 @@ export default function NewSkin({
               </div>
             ) : (
               <>
-                <i className="fas fa-image"></i>
                 <p>Cliquez pour choisir une image</p>
                 <p className="form-hint">
                   PNG, JPG, WebP — sera convertie en WebP automatiquement
@@ -218,6 +226,7 @@ export default function NewSkin({
             accept="image/*"
             onChange={handleImageChange}
             className="visually-hidden"
+            tabIndex={-1}
           />
         </div>
 
@@ -225,16 +234,23 @@ export default function NewSkin({
           <label className="form-label">Fichier skin (.osk)</label>
           <div
             className="file-upload-zone"
+            role="button"
+            tabIndex={0}
+            aria-label="Choisir un fichier skin"
             onClick={() => skinInputRef.current?.click()}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                skinInputRef.current?.click();
+              }
+            }}
           >
             {skinFileName ? (
               <div className="file-upload-info">
-                <i className="fas fa-file-archive"></i>
                 <span>{skinFileName}</span>
               </div>
             ) : (
               <>
-                <i className="fas fa-file-upload"></i>
                 <p>Cliquez pour choisir un fichier skin</p>
                 <p className="form-hint">.osk, .zip, ou tout format de skin</p>
               </>
@@ -247,6 +263,7 @@ export default function NewSkin({
             accept=".osk,.zip,.rar,.7z"
             onChange={handleSkinFileChange}
             className="visually-hidden"
+            tabIndex={-1}
           />
         </div>
 
@@ -314,11 +331,11 @@ export default function NewSkin({
           <button type="submit" className="btn-primary" disabled={isSubmitting}>
             {isSubmitting ? (
               <>
-                <i className="fas fa-spinner fa-spin"></i> Ajout en cours...
+                Ajout en cours...
               </>
             ) : (
               <>
-                <i className="fas fa-plus"></i> Ajouter le skin
+                Ajouter le skin
               </>
             )}
           </button>

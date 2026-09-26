@@ -73,7 +73,7 @@ export default function TagsAdmin({
         </div>
       )}
       {actionData?.error && (
-        <div className="login-error admin-form-error">
+        <div className="login-error admin-form-error" role="alert">
           {actionData.error}
         </div>
       )}
@@ -88,6 +88,7 @@ export default function TagsAdmin({
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
           placeholder="Nom du tag (ex: Stream)"
+          aria-label="Nom du tag"
           required
         />
         <input
@@ -99,11 +100,12 @@ export default function TagsAdmin({
           aria-label="Couleur du nouveau tag"
         />
         <button type="submit" className="btn-primary btn-small">
-          <i className="fas fa-plus"></i> Ajouter
+          Ajouter
         </button>
       </Form>
 
       {/* Tag list */}
+      {tags.length > 0 && (
       <div className="tag-manager-list">
         {tags.map((tag) => (
           <div key={tag.id} className="tag-manager-item">
@@ -130,7 +132,7 @@ export default function TagsAdmin({
 
             <span
               className="skin-tag-badge"
-              style={{ backgroundColor: tag.color }}
+              style={{ borderLeftColor: tag.color }}
             >
               {tag.name}
             </span>
@@ -148,12 +150,13 @@ export default function TagsAdmin({
                   }
                 }}
               >
-                <i className="fas fa-trash"></i>
+                Supprimer
               </button>
             </Form>
           </div>
         ))}
       </div>
+      )}
 
       {tags.length === 0 && (
         <p className="admin-empty">

@@ -19,7 +19,4 @@
       "bucket_name": "osu-yuzu-skins-storage",
     },
   ],
-  "vars": {
-    "SESSION_SECRET": "change-me-in-production",
-  },
 }

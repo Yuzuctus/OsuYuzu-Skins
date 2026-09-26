@@ -34,13 +34,13 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
         <h3 className="admin-section-title">Actions rapides</h3>
         <div className="admin-quick-actions">
           <Link to="/osu-direct/skins/new" className="btn-primary">
-            <i className="fas fa-plus"></i> Ajouter un skin
+            Ajouter un skin
           </Link>
           <Link to="/osu-direct/skins" className="btn-secondary">
-            <i className="fas fa-sort"></i> Réordonner les skins
+            Réordonner les skins
           </Link>
           <Link to="/osu-direct/tags" className="btn-secondary">
-            <i className="fas fa-tags"></i> Gérer les tags
+            Gérer les tags
           </Link>
         </div>
       </div>
