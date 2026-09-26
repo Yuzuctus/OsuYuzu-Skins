@@ -67,6 +67,11 @@ test("signed chunks become a downloadable file with the original name and range 
   assert.equal(completed.size, data.length);
   assert.match(completed.sha256, /^[a-f0-9]{64}$/);
 
+  const replay = await fetch(`${uploadUrl}?offset=0`, {
+    method: "PUT", headers: { authorization }, body: data,
+  });
+  assert.equal(replay.status, 409);
+
   const file = await fetch(`${base}/files/${key}`, { headers: { Origin: "https://skins.yuzuctus.fr" } });
   assert.equal(file.status, 200);
   assert.equal(file.headers.get("access-control-allow-origin"), "https://skins.yuzuctus.fr");

@@ -184,6 +184,9 @@ export function createStorageServer({ root, secret, allowedOrigins = ["https://s
         busy.add(ticket.nonce);
         try {
           if (req.method === "PUT" && !complete) {
+            if (key !== "bundles/all.zip" && await stat(join(root, key)).catch(() => null)) {
+              return send(res, 409, { error: "File already exists" });
+            }
             const offset = Number(url.searchParams.get("offset"));
             const length = Number(req.headers["content-length"]);
             if (!Number.isSafeInteger(offset) || offset < 0 || !Number.isSafeInteger(length) || length < 1 || length > CHUNK_LIMIT || offset + length > ticket.size) {
@@ -207,6 +210,9 @@ export function createStorageServer({ root, secret, allowedOrigins = ["https://s
             const sha256 = await digest(temp);
             const destination = join(root, key);
             await mkdir(dirname(destination), { recursive: true });
+            if (key !== "bundles/all.zip" && await stat(destination).catch(() => null)) {
+              return send(res, 409, { error: "File already exists" });
+            }
             await rename(temp, destination);
             await writeFile(`${destination}.json`, JSON.stringify({
               name: safeName(ticket.name), size: ticket.size, sha256, nonce: ticket.nonce,
