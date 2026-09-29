@@ -110,6 +110,14 @@
   background: var(--ag-ink);
   color: var(--ag-on-inverse);
 }
+/* Switch: exclusive options (FR/EN) share one frame; the active one is filled. */
+.ag-switch {
+  display: inline-flex;
+  border: var(--ag-border-hair) solid var(--ag-ink);
+}
+.ag-switch > .ag-toggle {
+  border: 0;
+}
 
 /* Footer: a deep ground in both themes; everything inside reads as dark. */
 .ag-footer {
@@ -382,6 +390,7 @@
   margin-top: var(--ag-space-5);
   font: 600 var(--ag-title-hero) / 0.84 var(--ag-font-title);
   letter-spacing: -0.03em;
+  text-transform: uppercase;
   overflow-wrap: anywhere;
 }
 .ag-hero__title > span {
