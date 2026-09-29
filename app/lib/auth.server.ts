@@ -8,7 +8,8 @@ import { TOTP, Secret } from "otpauth";
 
 // ─── Password Hashing (PBKDF2 via Web Crypto API) ───────
 
-const PBKDF2_ITERATIONS = 310_000;
+// The Cloudflare Workers runtime rejects PBKDF2 iteration counts above 100000.
+const PBKDF2_ITERATIONS = 100_000;
 const SALT_LENGTH = 16;
 const KEY_LENGTH = 32;
 
@@ -55,7 +56,7 @@ export async function verifyPassword(
   }
 
   const iterations = parseInt(iterStr, 10);
-  if (!Number.isFinite(iterations) || iterations < 10_000) {
+  if (!Number.isFinite(iterations) || iterations < 10_000 || iterations > 100_000) {
     return false;
   }
 
