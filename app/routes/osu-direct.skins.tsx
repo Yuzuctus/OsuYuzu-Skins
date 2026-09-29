@@ -143,7 +143,7 @@ function SortableItem({
             {skin.tags.map((tag) => (
               <span
                 key={tag.id}
-                className="skin-tag-badge"
+                className="ag-tag skin-tag-badge"
                 style={{ borderLeftColor: tag.color }}
               >
                 {tag.name}
@@ -155,7 +155,7 @@ function SortableItem({
       <div className="drag-item-actions">
         <Link
           to={`/osu-direct/skins/${skin.id}`}
-          className="btn-secondary btn-small"
+          className="ag-button ag-button--quiet ag-button--sm"
           aria-label={`Modifier ${skin.name}`}
         >
           Modifier
@@ -165,7 +165,7 @@ function SortableItem({
           <input type="hidden" name="skinId" value={skin.id} />
           <button
             type="submit"
-            className="btn-danger btn-small"
+            className="ag-button ag-button--danger ag-button--sm"
             aria-label={`Supprimer ${skin.name}`}
             disabled={fetcher.state !== "idle"}
             onClick={(e) => {
@@ -226,15 +226,15 @@ export default function SkinsAdmin({
 
   return (
     <>
-      <div className="admin-page-header">
-        <h1>Gestion des Skins</h1>
+      <div className="ag-page-head">
+        <h1 className="ag-page-head__title">Gestion des Skins</h1>
         <div className="admin-page-actions">
           {hasChanges && (
-            <button onClick={saveOrder} className="btn-primary">
+            <button onClick={saveOrder} className="ag-button ag-button--solid">
               Sauvegarder l'ordre
             </button>
           )}
-          <Link to="/osu-direct/skins/new" className="btn-primary">
+          <Link to="/osu-direct/skins/new" className="ag-button ag-button--solid">
             Ajouter un skin
           </Link>
         </div>
@@ -278,7 +278,7 @@ export default function SkinsAdmin({
           <p>Aucun skin pour le moment.</p>
           <Link
             to="/osu-direct/skins/new"
-            className="btn-primary"
+            className="ag-button ag-button--solid"
           >
             Ajouter votre premier skin
           </Link>

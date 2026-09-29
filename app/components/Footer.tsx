@@ -1,15 +1,15 @@
 export function Footer() {
   return (
-    <footer id="footer" className="ag-footer skins-footer" aria-label="Pied de page">
-      <div className="ag-container skins-footer__inner">
-        <p className="yz-footer-mass">
+    <footer id="footer" className="ag-footer" aria-label="Pied de page">
+      <div className="ag-container ag-footer__inner">
+        <p className="ag-footer__mass">
           OSU!
           <br />
           YUZU
         </p>
-        <div className="yz-foot-cols">
+        <div className="ag-footer__cols">
           <div>
-            <h3>Trouver des skins</h3>
+            <h3 className="ag-kicker">Trouver des skins</h3>
             <ul>
               <li>
                 <a
@@ -46,7 +46,7 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h3>Ressources</h3>
+            <h3 className="ag-kicker">Ressources</h3>
             <ul>
               <li>
                 <a
@@ -78,7 +78,7 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h3>Ailleurs</h3>
+            <h3 className="ag-kicker">Ailleurs</h3>
             <ul>
               <li>
                 <a
@@ -102,7 +102,7 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        <div className="yz-foot-meta">
+        <div className="ag-footer__meta">
           <span>© 2026 Yuzuctus</span>
           <span>
             Illustrations :{" "}
@@ -114,7 +114,7 @@ export function Footer() {
               Kourihase
             </a>
           </span>
-          <span className="yz-foot-meta-end">
+          <span>
             <a href="#top">Haut de page ↑</a>
           </span>
         </div>

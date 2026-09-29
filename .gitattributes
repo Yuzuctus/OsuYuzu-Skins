@@ -20,3 +20,6 @@
 *.mp4 binary
 *.mp3 binary
 *.pdf binary
+
+# Agrume kit copy: byte-identical to the kit (node <kit>/check-parity.mjs app/styles/agrume)
+app/styles/agrume/** text eol=lf

@@ -197,9 +197,9 @@ export default function NewSkin({
 
   return (
     <>
-      <div className="admin-page-header">
-        <h1>Ajouter un skin</h1>
-        <Link to="/osu-direct/skins" className="btn-secondary">
+      <div className="ag-page-head">
+        <h1 className="ag-page-head__title">Ajouter un skin</h1>
+        <Link to="/osu-direct/skins" className="ag-button ag-button--quiet">
           Retour
         </Link>
       </div>
@@ -212,12 +212,12 @@ export default function NewSkin({
       {uploadError && <div className="login-error admin-form-error" role="alert">{uploadError}</div>}
 
       <Form method="post" encType="multipart/form-data" className="admin-form" onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label className="form-label" htmlFor="name">
+        <div className="ag-field form-group">
+          <label className="ag-field__label" htmlFor="name">
             Nom du skin *
           </label>
           <input
-            className="form-input"
+            className="ag-input"
             type="text"
             id="name"
             name="name"
@@ -227,8 +227,8 @@ export default function NewSkin({
           />
         </div>
 
-        <div className="form-group">
-          <label className="form-label">Image de preview</label>
+        <div className="ag-field form-group">
+          <label className="ag-field__label">Image de preview</label>
           <div
             className="file-upload-zone"
             role="button"
@@ -249,7 +249,7 @@ export default function NewSkin({
             ) : (
               <>
                 <p>Cliquez pour choisir une image</p>
-                <p className="form-hint">
+                <p className="ag-field__hint">
                   PNG, JPG, WebP — sera convertie en WebP automatiquement
                 </p>
               </>
@@ -261,13 +261,13 @@ export default function NewSkin({
             name="image"
             accept="image/*"
             onChange={handleImageChange}
-            className="visually-hidden"
+            className="ag-visually-hidden"
             tabIndex={-1}
           />
         </div>
 
-        <div className="form-group">
-          <label className="form-label">Fichier skin (.osk)</label>
+        <div className="ag-field form-group">
+          <label className="ag-field__label">Fichier skin (.osk)</label>
           <div
             className="file-upload-zone"
             role="button"
@@ -288,7 +288,7 @@ export default function NewSkin({
             ) : (
               <>
                 <p>Cliquez pour choisir un fichier skin</p>
-                <p className="form-hint">.osk, .zip, ou tout format de skin</p>
+                <p className="ag-field__hint">.osk, .zip, ou tout format de skin</p>
               </>
             )}
           </div>
@@ -298,33 +298,33 @@ export default function NewSkin({
             name="skinFile"
             accept=".osk,.zip,.rar,.7z"
             onChange={handleSkinFileChange}
-            className="visually-hidden"
+            className="ag-visually-hidden"
             tabIndex={-1}
           />
         </div>
 
-        <div className="form-group">
-          <label className="form-label" htmlFor="downloadUrl">
+        <div className="ag-field form-group">
+          <label className="ag-field__label" htmlFor="downloadUrl">
             Lien de téléchargement externe (optionnel)
           </label>
           <input
-            className="form-input"
+            className="ag-input"
             type="url"
             id="downloadUrl"
             name="downloadUrl"
             placeholder="https://drive.google.com/..."
           />
-          <p className="form-hint">
+          <p className="ag-field__hint">
             Utilisé seulement si aucun fichier skin n'est uploadé
           </p>
         </div>
 
-        <div className="form-group">
-          <label className="form-label" htmlFor="forumLink">
+        <div className="ag-field form-group">
+          <label className="ag-field__label" htmlFor="forumLink">
             Lien forum osu! (optionnel)
           </label>
           <input
-            className="form-input"
+            className="ag-input"
             type="url"
             id="forumLink"
             name="forumLink"
@@ -332,8 +332,8 @@ export default function NewSkin({
           />
         </div>
 
-        <div className="form-group">
-          <label className="form-label">Tags</label>
+        <div className="ag-field form-group">
+          <label className="ag-field__label">Tags</label>
           <div className="tag-selector">
             {tags.map((tag) => (
               <label key={tag.id}>
@@ -357,14 +357,14 @@ export default function NewSkin({
             ))}
           </div>
           {tags.length === 0 && (
-            <p className="form-hint">
+            <p className="ag-field__hint">
               <Link to="/osu-direct/tags">Créer des tags d'abord</Link>
             </p>
           )}
         </div>
 
         <div className="form-actions">
-          <button type="submit" className="btn-primary" disabled={isSubmitting}>
+          <button type="submit" className="ag-button ag-button--solid" disabled={isSubmitting}>
             {isSubmitting ? (
               <>
                 {uploading ? `Envoi du skin ${uploadProgress} %...` : "Ajout en cours..."}
@@ -375,7 +375,7 @@ export default function NewSkin({
               </>
             )}
           </button>
-          <Link to="/osu-direct/skins" className="btn-secondary">
+          <Link to="/osu-direct/skins" className="ag-button ag-button--quiet">
             Annuler
           </Link>
         </div>

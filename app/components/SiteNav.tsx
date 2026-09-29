@@ -12,7 +12,7 @@ export function YzThemeToggle() {
     document.documentElement.setAttribute("data-theme", next);
     document
       .querySelector('meta[name="theme-color"]')
-      ?.setAttribute("content", next === "dark" ? "#1c2721" : "#fcf7ee");
+      ?.setAttribute("content", next === "dark" ? "#131c17" : "#f3f6ea");
   }, []);
 
   function toggle() {
@@ -21,7 +21,7 @@ export function YzThemeToggle() {
     document.documentElement.setAttribute("data-theme", next);
     document
       .querySelector('meta[name="theme-color"]')
-      ?.setAttribute("content", next === "dark" ? "#1c2721" : "#fcf7ee");
+      ?.setAttribute("content", next === "dark" ? "#131c17" : "#f3f6ea");
     localStorage.setItem("theme", next);
   }
 
@@ -62,12 +62,10 @@ export function SiteNav() {
   }, []);
 
   return (
-    <header className="ag-site-header skins-nav">
+    <header className="ag-site-header">
       <div className="ag-container ag-site-header__inner">
-        <a className="ag-site-header__brand skins-nav__brand" href="#top" aria-label="Osu!Yuzu — haut de page">
-          <span>
-            <b>OSU!</b>YUZU
-          </span>
+        <a className="ag-wordmark" href="#top" aria-label="Osu!Yuzu — haut de page">
+          Osu!<span className="ag-wordmark__accent">Yuzu</span>
         </a>
         <nav className="ag-site-header__nav" aria-label="Navigation">
           <a href="#collection" aria-current={currentSection === "collection" ? "location" : undefined}>

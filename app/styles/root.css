@@ -1,49 +1,17 @@
-@import "./tokens.css";
-
-body { margin: 0; min-height: 100svh; background: var(--foundation-page); color: var(--ink-reading); font: 400 1rem/1.5 var(--font-text); }
-
+/* Site-local: the root error page. Everything else comes from the Agrume kit. */
 .root-error {
-  width: min(100% - (2 * var(--page-margin)), 50rem);
-  min-height: 100svh;
   display: flex;
+  min-height: 100svh;
   flex-direction: column;
   justify-content: center;
-  padding-block: var(--space-5xl);
-  margin-inline: auto;
-  font-family: var(--font-body);
+  padding-block: var(--ag-space-10);
 }
-
-.root-error h1 {
-  padding-bottom: var(--space-l);
-  border-bottom: 2px solid var(--border-strong);
-  font-family: var(--font-display);
-  font-size: clamp(6rem, 20vw, 11rem);
-  font-weight: 800;
-  line-height: .82;
-}
-
-.root-error p {
-  margin-top: var(--space-m);
-}
-
-.root-error a {
-  color: var(--ink-reading);
-  font: 500 .75rem/1.4 var(--font-func);
-  letter-spacing: .04em;
-  text-decoration: none;
-  text-transform: uppercase;
-  background: linear-gradient(var(--marker), var(--marker)) left bottom / 38% .65em no-repeat;
-  transition: background-size 220ms var(--ease-standard);
-}
-.root-error a:hover, .root-error a:focus-visible { background-size: 100% .65em; }
-
-.root-error-stack {
-  width: 100%;
-  padding: var(--space-m);
-  margin-top: var(--space-l);
+.root-error__stack {
+  max-width: 100%;
+  margin-top: var(--ag-space-7);
   overflow-x: auto;
-  border: var(--border-hairline) solid var(--border-strong);
-  background: var(--foundation-surface);
-  font-family: var(--font-mono);
-  font-size: var(--text-small);
+  border-top: var(--ag-border-rule) solid var(--ag-ink);
+  padding: var(--ag-space-4) 0;
+  color: var(--ag-muted);
+  font: 500 var(--ag-text-xs) / 1.5 var(--ag-font-mono);
 }

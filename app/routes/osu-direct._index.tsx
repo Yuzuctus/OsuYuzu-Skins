@@ -15,35 +15,37 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 
   return (
     <>
-      <div className="admin-page-header">
-        <h1>Dashboard</h1>
+      <div className="ag-page-head">
+        <h1 className="ag-page-head__title">Dashboard</h1>
       </div>
 
       <div className="admin-stats">
         <div className="admin-stat-card">
           <div className="stat-value">{skinCount}</div>
-          <div className="stat-label">Skins</div>
+          <div className="ag-kicker stat-label">Skins</div>
         </div>
         <div className="admin-stat-card">
           <div className="stat-value">{tagCount}</div>
-          <div className="stat-label">Tags</div>
+          <div className="ag-kicker stat-label">Tags</div>
         </div>
       </div>
 
-      <div className="admin-section">
-        <h3 className="admin-section-title">Actions rapides</h3>
+      <section className="ag-section">
+        <div className="ag-section__head">
+          <h3 className="ag-section__title">Actions rapides</h3>
+        </div>
         <div className="admin-quick-actions">
-          <Link to="/osu-direct/skins/new" className="btn-primary">
+          <Link to="/osu-direct/skins/new" className="ag-button ag-button--solid">
             Ajouter un skin
           </Link>
-          <Link to="/osu-direct/skins" className="btn-secondary">
+          <Link to="/osu-direct/skins" className="ag-button ag-button--quiet">
             Réordonner les skins
           </Link>
-          <Link to="/osu-direct/tags" className="btn-secondary">
+          <Link to="/osu-direct/tags" className="ag-button ag-button--quiet">
             Gérer les tags
           </Link>
         </div>
-      </div>
+      </section>
     </>
   );
 }

@@ -77,7 +77,7 @@ export function BundleBanner() {
         {rebuildError && <div className="bundle-status-error">{rebuildError}</div>}
         {rebuilding && <div className="bundle-status-detail">Reconstruction sur le VPS…</div>}
       </div>
-      <button type="button" className="btn-primary btn-small" onClick={rebuild} disabled={rebuilding}>
+      <button type="button" className="ag-button ag-button--solid ag-button--sm" onClick={rebuild} disabled={rebuilding}>
         {rebuilding ? "Reconstruction…" : "Reconstruire l'archive"}
       </button>
     </div>

@@ -11,12 +11,12 @@ import {
 import { assertSameOrigin } from "~/lib/security.server";
 import { ThemeToggle } from "~/components/ThemeToggle";
 import { QRCodeSVG } from "qrcode.react";
-import stylesUrl from "~/styles/styles.css?url";
-import agrumeAdminUrl from "~/styles/admin-agrume.css?url";
+import agAppUrl from "~/styles/agrume/app.css?url";
+import adminUrl from "~/styles/admin.css?url";
 
 export const links: Route.LinksFunction = () => [
-  { rel: "stylesheet", href: stylesUrl },
-  { rel: "stylesheet", href: agrumeAdminUrl },
+  { rel: "stylesheet", href: agAppUrl },
+  { rel: "stylesheet", href: adminUrl },
 ];
 
 export function meta() {
@@ -118,9 +118,8 @@ export default function SetupPage({
       <ThemeToggle />
       <div className="setup-container">
         <div className="setup-card">
-          <h1>
-            <span className="logo-text">Osu!</span>
-            <span className="logo-accent">Direct</span>
+          <h1 className="ag-page-head__title">
+            Osu!<span className="ag-wordmark__accent">Direct</span>
           </h1>
           <p className="setup-subtitle">
             Configuration initiale du compte admin
@@ -129,12 +128,12 @@ export default function SetupPage({
           {error && <div className="login-error" role="alert">{error}</div>}
 
           <Form method="post">
-            <div className="form-group">
-              <label className="form-label" htmlFor="username">
+            <div className="ag-field form-group">
+              <label className="ag-field__label" htmlFor="username">
                 Nom d'utilisateur
               </label>
               <input
-                className="form-input"
+                className="ag-input"
                 type="text"
                 id="username"
                 name="username"
@@ -143,27 +142,27 @@ export default function SetupPage({
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="password">
+            <div className="ag-field form-group">
+              <label className="ag-field__label" htmlFor="password">
                 Mot de passe
               </label>
               <input
-                className="form-input"
+                className="ag-input"
                 type="password"
                 id="password"
                 name="password"
                 required
                 minLength={8}
               />
-              <p className="form-hint">Minimum 8 caractères</p>
+              <p className="ag-field__hint">Minimum 8 caractères</p>
             </div>
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="confirmPassword">
+            <div className="ag-field form-group">
+              <label className="ag-field__label" htmlFor="confirmPassword">
                 Confirmer le mot de passe
               </label>
               <input
-                className="form-input"
+                className="ag-input"
                 type="password"
                 id="confirmPassword"
                 name="confirmPassword"
@@ -172,25 +171,25 @@ export default function SetupPage({
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label">
+            <div className="ag-field form-group">
+              <label className="ag-field__label">
                 2FA — Scannez ce QR code avec Bitwarden
               </label>
               <div className="qr-container">
                 <QRCodeSVG value={totpUri} size={200} />
               </div>
               <div className="totp-secret-display">{totpSecret}</div>
-              <p className="form-hint">
+              <p className="ag-field__hint">
                 Ou entrez ce code manuellement dans Bitwarden
               </p>
             </div>
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="totpCode">
+            <div className="ag-field form-group">
+              <label className="ag-field__label" htmlFor="totpCode">
                 Vérification — Entrez le code 2FA généré
               </label>
               <input
-                className="form-input"
+                className="ag-input"
                 type="text"
                 id="totpCode"
                 name="totpCode"
@@ -206,7 +205,7 @@ export default function SetupPage({
 
             <button
               type="submit"
-              className="btn-primary"
+              className="ag-button ag-button--solid"
               disabled={isSubmitting}
             >
               {isSubmitting ? (

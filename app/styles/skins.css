@@ -1,0 +1,11 @@
+/* skins.yuzuctus.fr: site-local exceptions to the Agrume kit. Keep them rare and
+   token-based; everything else comes from ./agrume/ (copied verbatim). */
+
+/* In-page anchors scroll smoothly (the kit lands them below the sticky header). */
+html {
+  scroll-behavior: smooth;
+}
+
+.skins-hero__colophon {
+  margin-top: var(--ag-space-9);
+}

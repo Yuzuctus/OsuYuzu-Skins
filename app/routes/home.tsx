@@ -5,11 +5,10 @@ import { FeaturedSkin, SkinDirectory } from "~/components/SkinIndex";
 import { SiteNav } from "~/components/SiteNav";
 import { BackToTop } from "~/components/BackToTop";
 import { Footer } from "~/components/Footer";
-import collectionStylesUrl from "~/styles/skins-agrume.css?url";
+import skinsStylesUrl from "~/styles/skins.css?url";
 
 export const links: Route.LinksFunction = () => [
-  { rel: "stylesheet", href: "/agrume.css" },
-  { rel: "stylesheet", href: collectionStylesUrl },
+  { rel: "stylesheet", href: skinsStylesUrl },
 ];
 
 export function meta({}: Route.MetaArgs) {
@@ -67,7 +66,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     : null;
 
   return (
-    <div className="ag skins-app" id="top">
+    <div id="top">
       <a className="ag-skip-link" href="#collection">
         Aller à la collection
       </a>
@@ -76,8 +75,8 @@ export default function Home({ loaderData }: Route.ComponentProps) {
       <main id="main">
         <Hero skinCount={skins.length} />
 
-        <div className="skins-facts" aria-label="Informations sur la collection">
-          <div className="ag-container skins-facts__inner ag-label">
+        <div className="ag-factline" aria-label="Informations sur la collection">
+          <div className="ag-container ag-factline__inner">
             <span>
               <strong>{skins.length}</strong> skins
             </span>
@@ -87,7 +86,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               </span>
             )}
             {main && (
-              <a className="ag-action ag-action--text skins-facts__action" href="/api/download-all">
+              <a className="ag-action ag-action--text" href="/api/download-all">
                 <span>Tout prendre (.zip) ↓</span>
               </a>
             )}
@@ -96,13 +95,13 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
         {main && <FeaturedSkin skin={main} />}
 
-        <section className="ag-section skins-collection" id="collection" aria-labelledby="t-collection">
+        <section className={main ? "ag-chapter ag-chapter--follow" : "ag-chapter"} id="collection" aria-labelledby="t-collection">
           <div className="ag-container">
-            <div className="ag-section-heading">
-              <h2 id="t-collection" className="ag-section-title">
+            <div className="ag-chapter__head">
+              <h2 id="t-collection" className="ag-chapter__title">
                 La collection
               </h2>
-              <p className="ag-section-heading__note">02 — Collection · ordre de préférence</p>
+              <p className="ag-chapter__note">02 — Collection · ordre de préférence</p>
             </div>
             {skins.length === 0 ? (
               <div className="ag-state">

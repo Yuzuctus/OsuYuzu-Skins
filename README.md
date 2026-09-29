@@ -70,9 +70,25 @@ You can then promote a version to production after verification or roll it out p
 npx wrangler versions deploy
 ```
 
-## Styling
+## Design (Agrume v3)
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+The site wears the shared Yuzuctus design kit, Agrume v3
+(`Personnel/Redesign/Agrume_Design`, see its `DESIGN.md`). There is no site palette
+and no site font: colours, rules, grain, type (IBM Plex) and spacing come from the kit.
+
+- `app/styles/agrume/` is a **verbatim copy** of the kit's `css/` core (`fonts`, `tokens`,
+  `base`, `components`) plus `app.css` for the admin forms. `app/styles/fonts/` holds the
+  kit's four `.woff2` files and their licences. Never edit these copies: change the kit
+  first, then recopy. `.gitattributes` forces LF on the copy so parity holds.
+- The core is loaded for every page in `app/root.tsx`; `app.css` only on `/osu-direct`.
+- Site-local CSS stays small and uses `--ag-*` tokens only: `app/styles/root.css` (error
+  page), `app/styles/skins.css` (public collection), `app/styles/admin.css` (OsuDirect admin).
+
+Check that the copy is byte-identical to the kit (exit code 0):
+
+```sh
+node ../Redesign/Agrume_Design/check-parity.mjs app/styles/agrume
+```
 
 ---
 

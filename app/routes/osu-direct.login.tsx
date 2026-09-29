@@ -5,12 +5,12 @@ import { verifyPassword, verifyTOTP } from "~/lib/auth.server";
 import { getSessionId, createSessionCookie } from "~/lib/session.server";
 import { assertSameOrigin } from "~/lib/security.server";
 import { ThemeToggle } from "~/components/ThemeToggle";
-import stylesUrl from "~/styles/styles.css?url";
-import agrumeAdminUrl from "~/styles/admin-agrume.css?url";
+import agAppUrl from "~/styles/agrume/app.css?url";
+import adminUrl from "~/styles/admin.css?url";
 
 export const links: Route.LinksFunction = () => [
-  { rel: "stylesheet", href: stylesUrl },
-  { rel: "stylesheet", href: agrumeAdminUrl },
+  { rel: "stylesheet", href: agAppUrl },
+  { rel: "stylesheet", href: adminUrl },
 ];
 
 export function meta() {
@@ -102,21 +102,20 @@ export default function LoginPage({
       <ThemeToggle />
       <div className="login-container">
         <div className="login-card">
-          <h1>
-            <span className="logo-text">Osu!</span>
-            <span className="logo-accent">Direct</span>
+          <h1 className="ag-page-head__title">
+            Osu!<span className="ag-wordmark__accent">Direct</span>
           </h1>
           <p className="login-subtitle">Connexion au panel admin</p>
 
           {error && <div className="login-error" role="alert">{error}</div>}
 
           <Form method="post">
-            <div className="form-group">
-              <label className="form-label" htmlFor="username">
+            <div className="ag-field form-group">
+              <label className="ag-field__label" htmlFor="username">
                 Nom d'utilisateur
               </label>
               <input
-                className="form-input"
+                className="ag-input"
                 type="text"
                 id="username"
                 name="username"
@@ -126,12 +125,12 @@ export default function LoginPage({
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="password">
+            <div className="ag-field form-group">
+              <label className="ag-field__label" htmlFor="password">
                 Mot de passe
               </label>
               <input
-                className="form-input"
+                className="ag-input"
                 type="password"
                 id="password"
                 name="password"
@@ -140,12 +139,12 @@ export default function LoginPage({
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="totp">
+            <div className="ag-field form-group">
+              <label className="ag-field__label" htmlFor="totp">
                 Code 2FA (Bitwarden)
               </label>
               <input
-                className="form-input"
+                className="ag-input"
                 type="text"
                 id="totp"
                 name="totp"
@@ -160,7 +159,7 @@ export default function LoginPage({
 
             <button
               type="submit"
-              className="btn-primary"
+              className="ag-button ag-button--solid"
               disabled={isSubmitting}
             >
               {isSubmitting ? (

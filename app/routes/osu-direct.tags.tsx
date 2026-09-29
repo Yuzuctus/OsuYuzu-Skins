@@ -60,8 +60,8 @@ export default function TagsAdmin({
 
   return (
     <>
-      <div className="admin-page-header">
-        <h1>Gestion des Tags</h1>
+      <div className="ag-page-head">
+        <h1 className="ag-page-head__title">Gestion des Tags</h1>
       </div>
 
       {actionData?.message && (
@@ -82,7 +82,7 @@ export default function TagsAdmin({
       <Form method="post" className="tag-add-form">
         <input type="hidden" name="intent" value="create" />
         <input
-          className="form-input"
+          className="ag-input"
           type="text"
           name="name"
           value={newName}
@@ -99,7 +99,7 @@ export default function TagsAdmin({
           className="tag-manager-color"
           aria-label="Couleur du nouveau tag"
         />
-        <button type="submit" className="btn-primary btn-small">
+        <button type="submit" className="ag-button ag-button--solid ag-button--sm">
           Ajouter
         </button>
       </Form>
@@ -131,7 +131,7 @@ export default function TagsAdmin({
             <span className="tag-manager-name">{tag.name}</span>
 
             <span
-              className="skin-tag-badge"
+              className="ag-tag skin-tag-badge"
               style={{ borderLeftColor: tag.color }}
             >
               {tag.name}
@@ -142,7 +142,7 @@ export default function TagsAdmin({
               <input type="hidden" name="tagId" value={tag.id} />
               <button
                 type="submit"
-                className="btn-danger btn-small"
+                className="ag-button ag-button--danger ag-button--sm"
                 aria-label={`Supprimer le tag ${tag.name}`}
                 onClick={(e) => {
                   if (!confirm(`Supprimer le tag "${tag.name}"\u00A0?`)) {

@@ -14,7 +14,7 @@ export function BackToTop() {
 
   return (
     <a
-      className={`yz-top${visible ? " visible" : ""}`}
+      className={`ag-to-top${visible ? " is-visible" : ""}`}
       href="#top"
       aria-label="Haut de page"
     >

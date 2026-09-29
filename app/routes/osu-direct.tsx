@@ -4,14 +4,12 @@ import { BundleBanner } from "~/components/BundleBanner";
 import { ThemeToggle } from "~/components/ThemeToggle";
 import { getAdmin, cleanExpiredSessions } from "~/lib/db.server";
 import { requireAdminSession } from "~/lib/security.server";
-import stylesUrl from "~/styles/styles.css?url";
+import agAppUrl from "~/styles/agrume/app.css?url";
 import adminUrl from "~/styles/admin.css?url";
-import agrumeAdminUrl from "~/styles/admin-agrume.css?url";
 
 export const links: Route.LinksFunction = () => [
-  { rel: "stylesheet", href: stylesUrl },
+  { rel: "stylesheet", href: agAppUrl },
   { rel: "stylesheet", href: adminUrl },
-  { rel: "stylesheet", href: agrumeAdminUrl },
 ];
 
 export async function loader({ request, context }: Route.LoaderArgs) {
@@ -42,54 +40,36 @@ export default function AdminLayout({ loaderData }: Route.ComponentProps) {
       data-page-tone="tool"
       data-product-mode="admin"
     >
-      <aside className="admin-sidebar">
-        <div className="admin-sidebar-header">
-          <h2>
-            <span className="logo-text">Osu!</span>
-            <span className="logo-accent">Direct</span>
-          </h2>
-          <span className="admin-badge">
-            Admin
-          </span>
+      <aside className="ag-site-header">
+        <div className="ag-container ag-site-header__inner">
+          <div className="admin-brand">
+            <h2 className="ag-wordmark">
+              Osu!<span className="ag-wordmark__accent">Direct</span>
+            </h2>
+            <span className="ag-kicker">Admin</span>
+          </div>
+          <nav className="ag-site-header__nav" aria-label="Administration">
+            {/* NavLink sets aria-current="page" on the active link. */}
+            <NavLink to="/osu-direct" end>
+              Dashboard
+            </NavLink>
+            <NavLink to="/osu-direct/skins">Skins</NavLink>
+            <NavLink to="/osu-direct/tags">Tags</NavLink>
+            <a href="/" target="_blank">
+              Voir le site
+            </a>
+            <Form method="post" action="/osu-direct/logout">
+              <button type="submit">
+                Déconnexion
+              </button>
+            </Form>
+          </nav>
+          <div className="ag-site-header__controls">
+            <ThemeToggle inline />
+          </div>
         </div>
-        <nav className="admin-nav">
-          <NavLink
-            to="/osu-direct"
-            end
-            className={({ isActive }) =>
-              `admin-nav-link ${isActive ? "active" : ""}`
-            }
-          >
-            Dashboard
-          </NavLink>
-          <NavLink
-            to="/osu-direct/skins"
-            className={({ isActive }) =>
-              `admin-nav-link ${isActive ? "active" : ""}`
-            }
-          >
-            Skins
-          </NavLink>
-          <NavLink
-            to="/osu-direct/tags"
-            className={({ isActive }) =>
-              `admin-nav-link ${isActive ? "active" : ""}`
-            }
-          >
-            Tags
-          </NavLink>
-          <a href="/" className="admin-nav-link" target="_blank">
-            Voir le site
-          </a>
-          <Form method="post" action="/osu-direct/logout" className="admin-logout-form">
-            <button type="submit" className="admin-nav-link logout-btn">
-              Déconnexion
-            </button>
-          </Form>
-        </nav>
-        <ThemeToggle inline />
       </aside>
-      <main className="admin-main">
+      <main className="ag-container admin-main">
         <BundleBanner />
         <Outlet />
       </main>

@@ -15,26 +15,26 @@ function SkinRow({ skin, rank }: { skin: Skin; rank: number }) {
   const shot = skin.image_key ? `/api/image/${skin.id}` : null;
 
   return (
-    <article className={`ag-record skins-record${dl ? " skins-record--downloadable" : ""}`}>
+    <li className="ag-record">
+      <span className="ag-record__rank">{String(rank).padStart(2, "0")}</span>
+      <div className="ag-record__copy">
+        <h3 className="ag-record__title">{skin.name}</h3>
+      </div>
       {dl && (
         <a
-          className="skins-record__download"
+          className="ag-record__primary"
           href={dl}
           target={external ? "_blank" : undefined}
           rel={external ? "noopener noreferrer" : undefined}
           aria-label={`Télécharger ${skin.name}`}
         >
-          <span className="skins-visually-hidden">Télécharger {skin.name}</span>
+          <span className="ag-visually-hidden">Télécharger {skin.name}</span>
         </a>
       )}
-      <span className="ag-label skins-record__rank">{String(rank).padStart(2, "0")}</span>
-      <div className="ag-record__copy">
-        <h3 className="ag-record__title">{skin.name}</h3>
-      </div>
       <div className="ag-record__actions">
         {skin.forum_link && (
           <a
-            className="ag-action ag-action--text skins-source-link"
+            className="ag-action ag-action--text"
             href={skin.forum_link}
             target="_blank"
             rel="noopener noreferrer"
@@ -43,17 +43,17 @@ function SkinRow({ skin, rank }: { skin: Skin; rank: number }) {
           </a>
         )}
         {!dl && (
-          <span className="ag-label">Bientôt disponible</span>
+          <span className="ag-kicker">Bientôt disponible</span>
         )}
       </div>
-      <figure className="ag-record__media skins-record__media">
+      <figure className="ag-record__media">
         {shot ? (
           <img src={shot} alt={`Aperçu du skin ${skin.name}`} loading="lazy" decoding="async" />
         ) : (
-          <span className="skins-preview-empty">Aperçu indisponible</span>
+          <span className="ag-empty-media">Aperçu indisponible</span>
         )}
       </figure>
-    </article>
+    </li>
   );
 }
 
@@ -70,17 +70,18 @@ export function SkinDirectory({
   );
 
   return (
-    <div id="skins-container" aria-label="Collection complète des skins">
-      <div className="skins-directory">
-        {rankedSkins.map(({ skin, rank }) => (
-          <SkinRow key={skin.id} skin={skin} rank={rank} />
-        ))}
-        {rankedSkins.length === 0 && (
-          <div className="ag-state">
-            <p className="ag-state__title">Aucun autre skin dans la collection.</p>
-          </div>
-        )}
-      </div>
+    <div id="skins-container">
+      {rankedSkins.length > 0 ? (
+        <ol className="ag-records" aria-label="Collection complète des skins">
+          {rankedSkins.map(({ skin, rank }) => (
+            <SkinRow key={skin.id} skin={skin} rank={rank} />
+          ))}
+        </ol>
+      ) : (
+        <div className="ag-state">
+          <p className="ag-state__title">Aucun autre skin dans la collection.</p>
+        </div>
+      )}
     </div>
   );
 }
@@ -95,51 +96,49 @@ export function FeaturedSkin({ skin }: { skin: Skin }) {
   const external = !skin.skin_file_key;
 
   return (
-    <section className="ag-section skins-feature" aria-labelledby="t-main">
-      <div className="ag-container">
-        <div className="ag-feature">
-          <div className="skins-feature__copy">
-            <p className="ag-label">01 — Skin utilisé actuellement</p>
-            <h2 id="t-main" className="ag-feature__title">{skin.name}</h2>
-            <div className="ag-hero__actions">
-              {dl ? (
-                <a
-                  className="ag-action ag-action--solid"
-                  href={dl}
-                  target={external ? "_blank" : undefined}
-                  rel={external ? "noopener noreferrer" : undefined}
-                >
-                  <span>Télécharger ↓</span>
-                </a>
-              ) : (
-                <span className="ag-label">Bientôt disponible</span>
-              )}
-              {skin.forum_link && (
-                <a
-                  className="ag-action ag-action--text skins-source-link"
-                  href={skin.forum_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span>Voir la source ↗</span>
-                </a>
-              )}
-            </div>
-          </div>
-          <figure className="ag-feature__media skins-feature__media">
-            {imageUrl ? (
-              <img
-                src={imageUrl}
-                alt={`Aperçu du skin ${skin.name}`}
-                decoding="async"
-                loading="eager"
-                fetchPriority="high"
-              />
+    <section className="ag-chapter" aria-labelledby="t-main">
+      <div className="ag-container ag-feature">
+        <div>
+          <p className="ag-kicker">01 — Skin utilisé actuellement</p>
+          <h2 id="t-main" className="ag-feature__title">{skin.name}</h2>
+          <div className="ag-feature__actions">
+            {dl ? (
+              <a
+                className="ag-action ag-action--solid"
+                href={dl}
+                target={external ? "_blank" : undefined}
+                rel={external ? "noopener noreferrer" : undefined}
+              >
+                <span>Télécharger ↓</span>
+              </a>
             ) : (
-              <span className="skins-preview-empty">Aperçu indisponible</span>
+              <span className="ag-kicker">Bientôt disponible</span>
             )}
-          </figure>
+            {skin.forum_link && (
+              <a
+                className="ag-action ag-action--text"
+                href={skin.forum_link}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span>Voir la source ↗</span>
+              </a>
+            )}
+          </div>
         </div>
+        <figure className="ag-feature__media">
+          {imageUrl ? (
+            <img
+              src={imageUrl}
+              alt={`Aperçu du skin ${skin.name}`}
+              decoding="async"
+              loading="eager"
+              fetchPriority="high"
+            />
+          ) : (
+            <span className="ag-empty-media">Aperçu indisponible</span>
+          )}
+        </figure>
       </div>
     </section>
   );

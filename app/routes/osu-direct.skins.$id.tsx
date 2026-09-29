@@ -199,9 +199,9 @@ export default function EditSkin({
 
   return (
     <>
-      <div className="admin-page-header">
-        <h1>Modifier : {skin.name}</h1>
-        <Link to="/osu-direct/skins" className="btn-secondary">
+      <div className="ag-page-head">
+        <h1 className="ag-page-head__title">Modifier : {skin.name}</h1>
+        <Link to="/osu-direct/skins" className="ag-button ag-button--quiet">
           Retour
         </Link>
       </div>
@@ -214,12 +214,12 @@ export default function EditSkin({
       {uploadError && <div className="login-error admin-form-error" role="alert">{uploadError}</div>}
 
       <Form method="post" encType="multipart/form-data" className="admin-form" onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label className="form-label" htmlFor="name">
+        <div className="ag-field form-group">
+          <label className="ag-field__label" htmlFor="name">
             Nom du skin *
           </label>
           <input
-            className="form-input"
+            className="ag-input"
             type="text"
             id="name"
             name="name"
@@ -228,8 +228,8 @@ export default function EditSkin({
           />
         </div>
 
-        <div className="form-group">
-          <label className="form-label">Image de preview</label>
+        <div className="ag-field form-group">
+          <label className="ag-field__label">Image de preview</label>
           <div
             className="file-upload-zone"
             role="button"
@@ -259,18 +259,18 @@ export default function EditSkin({
             name="image"
             accept="image/*"
             onChange={handleImageChange}
-            className="visually-hidden"
+            className="ag-visually-hidden"
             tabIndex={-1}
           />
           {imagePreview && (
-            <p className="form-hint">
+            <p className="ag-field__hint">
               Choisissez une nouvelle image pour remplacer l'actuelle
             </p>
           )}
         </div>
 
-        <div className="form-group">
-          <label className="form-label">Fichier skin</label>
+        <div className="ag-field form-group">
+          <label className="ag-field__label">Fichier skin</label>
           <div
             className="file-upload-zone"
             role="button"
@@ -300,34 +300,34 @@ export default function EditSkin({
             name="skinFile"
             accept=".osk,.zip,.rar,.7z"
             onChange={handleSkinFileChange}
-            className="visually-hidden"
+            className="ag-visually-hidden"
             tabIndex={-1}
           />
         </div>
 
-        <div className="form-group">
-          <label className="form-label" htmlFor="downloadUrl">
+        <div className="ag-field form-group">
+          <label className="ag-field__label" htmlFor="downloadUrl">
             Lien de téléchargement externe (optionnel)
           </label>
           <input
-            className="form-input"
+            className="ag-input"
             type="url"
             id="downloadUrl"
             name="downloadUrl"
             defaultValue={skin.download_url || ""}
             placeholder="https://drive.google.com/..."
           />
-          <p className="form-hint">
+          <p className="ag-field__hint">
             Utilisé seulement si aucun fichier skin n'est uploadé
           </p>
         </div>
 
-        <div className="form-group">
-          <label className="form-label" htmlFor="forumLink">
+        <div className="ag-field form-group">
+          <label className="ag-field__label" htmlFor="forumLink">
             Lien forum osu! (optionnel)
           </label>
           <input
-            className="form-input"
+            className="ag-input"
             type="url"
             id="forumLink"
             name="forumLink"
@@ -336,8 +336,8 @@ export default function EditSkin({
           />
         </div>
 
-        <div className="form-group">
-          <label className="form-label">Tags</label>
+        <div className="ag-field form-group">
+          <label className="ag-field__label">Tags</label>
           <div className="tag-selector">
             {tags.map((tag) => (
               <label key={tag.id}>
@@ -364,7 +364,7 @@ export default function EditSkin({
         </div>
 
         <div className="form-actions">
-          <button type="submit" className="btn-primary" disabled={isSubmitting}>
+          <button type="submit" className="ag-button ag-button--solid" disabled={isSubmitting}>
             {isSubmitting ? (
               <>
                 {uploading ? `Envoi du skin ${uploadProgress} %...` : "Mise à jour..."}
@@ -375,7 +375,7 @@ export default function EditSkin({
               </>
             )}
           </button>
-          <Link to="/osu-direct/skins" className="btn-secondary">
+          <Link to="/osu-direct/skins" className="ag-button ag-button--quiet">
             Annuler
           </Link>
         </div>
