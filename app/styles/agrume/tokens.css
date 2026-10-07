@@ -100,11 +100,15 @@
   --ag-border-rule: 2px; /* opens a list or a section */
   --ag-border-mark: 3px; /* current item */
   --ag-radius-art: 2px; /* artwork only */
+  --ag-radius-person: 50%; /* a person: artist portrait, avatar */
   --ag-radius-round: 999px; /* dots only */
   --ag-ease: cubic-bezier(0.2, 0, 0, 1);
+  --ag-ease-out: cubic-bezier(0.16, 1, 0.3, 1); /* entrances: fast start, long settle */
   --ag-dur-fast: 120ms;
   --ag-dur: 180ms;
   --ag-dur-slow: 280ms;
+  --ag-dur-reveal: 560ms; /* a block entering the screen, a bar drawing */
+  --ag-stagger: 45ms; /* delay between siblings of one reveal */
 
   /* -------------------------------------------------------------- layout */
   /* Breakpoints (media queries cannot read variables): 620 · 760 · 960. */

@@ -125,6 +125,26 @@ body {
   transform: none;
 }
 
+/*
+ * Reveal: a block rises into place the first time it enters the screen. Opt-in
+ * twice: the page sets `data-ag-motion` on <html> (a script that sets
+ * `data-ag-in` on each `[data-reveal]` as it scrolls into view). Without the
+ * script, or under reduced motion, everything is simply there.
+ * `--ag-reveal-i` staggers siblings (0, 1, 2…).
+ */
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-ag-motion] [data-reveal] {
+    transition:
+      opacity var(--ag-dur-reveal) var(--ag-ease-out),
+      transform var(--ag-dur-reveal) var(--ag-ease-out);
+    transition-delay: calc(var(--ag-reveal-i, 0) * var(--ag-stagger));
+  }
+  :root[data-ag-motion] [data-reveal]:not([data-ag-in]) {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

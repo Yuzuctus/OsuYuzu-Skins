@@ -29,17 +29,25 @@
   font-size: var(--ag-text-md);
 }
 
-/* Section: the product's only container. An ink rule, a head, the content. */
+/*
+ * Section: the product's only container. A head, the content; sections are
+ * set apart by space and the title's weight, not by a line. `--ruled` opens
+ * with the ink rule where a hard break is meant (a ledger, a table run);
+ * `--tinted` lays one emphasised block on a tone band.
+ */
 .ag-section {
   min-width: 0;
+}
+.ag-section--ruled {
   border-top: var(--ag-border-rule) solid var(--ag-ink);
   padding-top: var(--ag-space-3);
 }
-.ag-section--quiet {
-  border-top: var(--ag-border-hair) solid var(--ag-rule-strong);
+.ag-section--tinted {
+  margin-inline: calc(-1 * var(--ag-space-5));
+  padding: var(--ag-space-5);
+  background: var(--ag-surface);
 }
 .ag-section--bare {
-  border-top: 0;
   padding-top: 0;
 }
 .ag-section__head {
