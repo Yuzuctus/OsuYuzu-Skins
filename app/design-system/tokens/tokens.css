@@ -1,0 +1,144 @@
+/*
+ * @yuzuctus/design-system · tokens.css (v3 — Desert Mirage & Mineral Night)
+ * Zéro violet IA. Zéro blanc clinique.
+ * - Nuit (par défaut) : Obsidienne-Basalte du désert + Menthe Yuzu, Citron Solaire, Azur Oasis, Corail Cactus.
+ * - Jour : Sable chaud du désert (Yuzu_No_Tempest) + Encre Cactus profonde + Pigments OC francs.
+ */
+
+:root,
+:root[data-film="negative"] {
+  color-scheme: dark;
+
+  /* ── Nuit du Désert (Obsidienne minérale organique, zéro violet) ── */
+  --yz-ground: #0b0f0e;
+  --yz-surface: #121816;
+  --yz-surface-sunken: #0e1312;
+  --yz-surface-raised: #18201d;
+  --yz-surface-elevated: #17201d;
+  --yz-surface-hover: #1d2824;
+  --yz-inverse-ground: #f5eee0;
+  --yz-inverse-ink: #0d2019;
+
+  /* ── Encre Sable-Craie chaude ── */
+  --yz-ink: #f4efe2;
+  --yz-ink-muted: #adb8b2;
+  --yz-ink-faint: #77857f;
+
+  /* ── Filets architecturaux ── */
+  --yz-rule: #232d29;
+  --yz-rule-strong: #43544d;
+  --yz-rule-subtle: rgba(244, 239, 226, 0.06);
+
+  /* ── Pigments directs de Yuzu (Mazuko + KouriHase) ── */
+  --yz-identity: #5df2bc;        /* Menthe chevelure */
+  --yz-identity-soft: rgba(93, 242, 188, 0.13);
+  --yz-mint-fill: #5df2bc;
+  --yz-mint-ink: #061c14;
+
+  --yz-accent: #f7df4a;          /* Yuzu solaire */
+  --yz-accent-ink: #171403;
+  --yz-accent-text: #f7df4a;
+
+  --yz-secondary: #5ad2f4;       /* Azur goggles / oasis */
+  --yz-secondary-soft: rgba(90, 210, 244, 0.14);
+
+  --yz-signal: #ff6b8b;          /* Corail fleur de cactus (rim KouriHase) */
+  --yz-signal-soft: rgba(255, 107, 139, 0.14);
+
+  --yz-sand: #d9b68c;            /* Sable désert chaud */
+
+  --yz-focus: #5df2bc;
+  --yz-shadow-float: 0 28px 70px -20px rgba(0, 0, 0, 0.85);
+
+  /* Typo monumentale derrière Mazuko */
+  --yz-backdrop-word: #f4efe2;
+  --yz-backdrop-stroke: rgba(93, 242, 188, 0.45);
+
+  /* ── Typographie ── */
+  --yz-font-display: "Bricolage Grotesque", system-ui, -apple-system, sans-serif;
+  --yz-font-sans: "Instrument Sans", system-ui, -apple-system, sans-serif;
+  --yz-font-mono: "Martian Mono", ui-monospace, Consolas, monospace;
+
+  /* ── Échelle ── */
+  --yz-text-2xs: 0.6875rem;
+  --yz-text-xs: 0.75rem;
+  --yz-text-sm: 0.875rem;
+  --yz-text-base: 0.98rem;
+  --yz-text-lg: 1.15rem;
+  --yz-text-xl: 1.45rem;
+  --yz-text-2xl: clamp(1.75rem, 3vw, 2.6rem);
+  --yz-text-3xl: clamp(2.4rem, 5.4vw, 4.6rem);
+  --yz-text-hero: clamp(4.6rem, 19.2vw, 20.5rem);
+
+  /* ── Espacements ── */
+  --yz-space-1: 4px;
+  --yz-space-2: 8px;
+  --yz-space-3: 12px;
+  --yz-space-4: 16px;
+  --yz-space-5: 24px;
+  --yz-space-6: 32px;
+  --yz-space-7: 56px;
+  --yz-space-8: 92px;
+  --yz-space-9: 132px;
+
+  /* ── Géométrie nette (0px éditorial vitrine, 4px contrôles outils) ── */
+  --yz-radius-sharp: 0px;
+  --yz-radius-control: 4px;
+  --yz-radius-card: 0px;
+  --yz-radius-pill: 999px;
+
+  --yz-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --yz-dur-fast: 150ms;
+  --yz-dur: 280ms;
+  --yz-dur-slow: 560ms;
+
+  --yz-container: 84rem;
+  --yz-edge: clamp(1.1rem, 3.6vw, 3.2rem);
+}
+
+/* ═══════════════════════════════════════════════════════════
+ * JOUR DÉSERT — Sable chaud (Yuzu_No_Tempest) & Encre Cactus
+ * ═══════════════════════════════════════════════════════════ */
+:root[data-film="positive"] {
+  color-scheme: light;
+
+  --yz-ground: #f5eee0;
+  --yz-surface: #ebe1cd;
+  --yz-surface-sunken: #e0d4bc;
+  --yz-surface-raised: #fbf7ee;
+  --yz-surface-elevated: #f9f5eb;
+  --yz-surface-hover: #e3d7c0;
+  --yz-inverse-ground: #0d2019;
+  --yz-inverse-ink: #f5eee0;
+
+  --yz-ink: #0d2019;
+  --yz-ink-muted: #394f46;
+  --yz-ink-faint: #5e726a;
+
+  --yz-rule: #d5c8b0;
+  --yz-rule-strong: #173a2e;
+  --yz-rule-subtle: rgba(13, 32, 25, 0.07);
+
+  --yz-identity: #087e55;
+  --yz-identity-soft: rgba(8, 126, 85, 0.13);
+  --yz-mint-fill: #5df2bc;
+  --yz-mint-ink: #061c14;
+
+  --yz-accent: #f3d838;
+  --yz-accent-ink: #171403;
+  --yz-accent-text: #736000;
+
+  --yz-secondary: #0f7ea6;
+  --yz-secondary-soft: rgba(15, 126, 166, 0.13);
+
+  --yz-signal: #d6335d;
+  --yz-signal-soft: rgba(214, 51, 93, 0.13);
+
+  --yz-sand: #c99d6b;
+
+  --yz-focus: #0f7ea6;
+  --yz-shadow-float: 0 22px 54px -18px rgba(13, 32, 25, 0.2);
+
+  --yz-backdrop-word: #0d241c;
+  --yz-backdrop-stroke: rgba(13, 36, 28, 0.34);
+}

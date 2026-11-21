@@ -1,0 +1,141 @@
+/*
+ * @yuzuctus/design-system · core/base.css
+ * Reset minimal, typographie, accessibilité et View Transitions circulaires.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--yz-ground);
+  color: var(--yz-ink);
+  font-family: var(--yz-font-sans);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+  scrollbar-color: var(--yz-rule-strong) var(--yz-ground);
+  scrollbar-width: thin;
+}
+
+::selection {
+  background: var(--yz-accent);
+  color: var(--yz-accent-ink);
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: var(--yz-ground);
+  color: var(--yz-ink);
+  overflow-x: clip;
+}
+
+img,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--yz-focus);
+  outline-offset: 2px;
+}
+
+.yz-skip-link {
+  position: fixed;
+  top: -100px;
+  left: var(--yz-space-4);
+  z-index: 200;
+  padding: 10px 16px;
+  background: var(--yz-accent);
+  color: var(--yz-accent-ink);
+  font-family: var(--yz-font-mono);
+  font-size: var(--yz-text-xs);
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: var(--yz-radius-control);
+}
+
+.yz-skip-link:focus {
+  top: var(--yz-space-4);
+}
+
+/* ── Voix typographiques ── */
+.yz-display {
+  font-family: var(--yz-font-display);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 0.94;
+}
+
+.yz-label {
+  font-family: var(--yz-font-sans);
+  font-size: var(--yz-text-xs);
+  font-weight: 500;
+  color: var(--yz-ink-faint);
+}
+
+.yz-mono {
+  font-family: var(--yz-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.yz-num {
+  font-variant-numeric: tabular-nums;
+}
+
+.yz-container {
+  width: min(100%, var(--yz-container));
+  margin-inline: auto;
+  padding-inline: var(--yz-edge);
+}
+
+/* ── View Transitions API : onde circulaire Positif ↔ Négatif ── */
+::view-transition,
+::view-transition-group(*),
+::view-transition-image-pair(*) {
+  pointer-events: none;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

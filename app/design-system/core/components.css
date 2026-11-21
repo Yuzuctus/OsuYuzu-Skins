@@ -1,0 +1,395 @@
+/*
+ * @yuzuctus/design-system · core/components.css
+ * Primitives UI partagées (Pôle Outils + socle Vitrine).
+ * Zéro WebGL, zéro SVG illustratif.
+ */
+
+/* ── Boutons ── */
+.yz-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 18px;
+  border-radius: var(--yz-radius-control);
+  border: 1px solid var(--yz-rule-subtle);
+  background: var(--yz-surface);
+  color: var(--yz-ink);
+  font-family: var(--yz-font-sans);
+  font-size: var(--yz-text-xs);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    background-color var(--yz-dur-fast) var(--yz-ease),
+    color var(--yz-dur-fast) var(--yz-ease),
+    border-color var(--yz-dur-fast) var(--yz-ease),
+    transform var(--yz-dur-fast) var(--yz-ease);
+}
+
+.yz-btn:hover {
+  border-color: var(--yz-rule-strong);
+  background: var(--yz-surface-hover);
+}
+
+.yz-btn:active {
+  transform: translateY(1px);
+}
+
+.yz-btn--solid {
+  background: var(--yz-ink);
+  color: var(--yz-ground);
+  border-color: var(--yz-ink);
+}
+
+.yz-btn--solid:hover {
+  background: var(--yz-accent);
+  color: var(--yz-accent-ink);
+  border-color: var(--yz-accent);
+}
+
+.yz-btn--accent {
+  background: var(--yz-accent);
+  color: var(--yz-accent-ink);
+  border-color: var(--yz-accent);
+  font-weight: 600;
+}
+
+.yz-btn--accent:hover {
+  background: var(--yz-ink);
+  color: var(--yz-ground);
+  border-color: var(--yz-ink);
+}
+
+.yz-btn--ghost {
+  border-color: transparent;
+  background: transparent;
+  padding-inline: 12px;
+}
+
+.yz-btn--ghost:hover {
+  border-color: transparent;
+  background: var(--yz-surface-hover);
+}
+
+.yz-btn--sm {
+  min-height: 32px;
+  padding: 0 12px;
+  font-size: var(--yz-text-xs);
+}
+
+/* ── Switch Positif / Négatif (compact & discret) ── */
+.yz-film-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 8px 0 7px;
+  border-radius: var(--yz-radius-control);
+  border: 1px solid var(--yz-rule-subtle);
+  background: transparent;
+  color: var(--yz-ink-muted);
+  font-family: var(--yz-font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition:
+    color var(--yz-dur-fast) var(--yz-ease),
+    border-color var(--yz-dur-fast) var(--yz-ease),
+    background-color var(--yz-dur-fast) var(--yz-ease);
+}
+
+.yz-film-switch:hover {
+  color: var(--yz-ink);
+  border-color: var(--yz-rule);
+  background: var(--yz-surface-elevated);
+}
+
+.yz-film-switch__aperture {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  background: linear-gradient(90deg, currentColor 50%, var(--yz-accent) 50%);
+  transition: transform var(--yz-dur) var(--yz-ease);
+  flex-shrink: 0;
+}
+
+:root[data-film="negative"] .yz-film-switch__aperture {
+  transform: rotate(180deg);
+}
+
+/* ── Pastilles & Statuts ── */
+.yz-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--yz-radius-control);
+  background: var(--yz-surface-elevated);
+  color: var(--yz-ink-muted);
+  font-family: var(--yz-font-sans);
+  font-size: var(--yz-text-xs);
+  font-weight: 600;
+}
+
+.yz-badge--live {
+  background: var(--yz-identity-soft);
+  color: var(--yz-identity);
+}
+
+.yz-badge--accent {
+  background: var(--yz-accent);
+  color: var(--yz-accent-ink);
+}
+
+.yz-badge--secondary {
+  background: var(--yz-secondary-soft);
+  color: var(--yz-secondary);
+}
+
+.yz-badge--signal {
+  background: var(--yz-signal-soft);
+  color: var(--yz-signal);
+}
+
+.yz-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--yz-identity);
+  box-shadow: 0 0 0 0 var(--yz-identity);
+  animation: yz-pulse 2.2s infinite;
+}
+
+@keyframes yz-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(99, 255, 208, 0.55);
+  }
+  70% {
+    box-shadow: 0 0 0 7px rgba(99, 255, 208, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(99, 255, 208, 0);
+  }
+}
+
+/* ── Repères optiques de viseur (100% CSS, zéro SVG) ── */
+.yz-viewfinder {
+  position: relative;
+}
+
+.yz-viewfinder::before,
+.yz-viewfinder::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.yz-viewfinder::before {
+  top: 0;
+  left: 0;
+  border-top: 1.5px solid var(--yz-rule-strong);
+  border-left: 1.5px solid var(--yz-rule-strong);
+}
+
+.yz-viewfinder::after {
+  right: 0;
+  bottom: 0;
+  border-right: 1.5px solid var(--yz-rule-strong);
+  border-bottom: 1.5px solid var(--yz-rule-strong);
+}
+
+/* ── Contrôles segmentés (FM & Labs) ── */
+.yz-segmented {
+  display: inline-flex;
+  flex-wrap: wrap;
+  max-width: 100%;
+  padding: 3px;
+  border-radius: var(--yz-radius-control);
+  background: var(--yz-surface-sunken);
+  gap: 2px;
+}
+
+.yz-segmented__item {
+  border: none;
+  background: transparent;
+  color: var(--yz-ink-muted);
+  padding: 6px 12px;
+  border-radius: 3px;
+  font-family: var(--yz-font-sans);
+  font-size: var(--yz-text-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color var(--yz-dur-fast) var(--yz-ease),
+    color var(--yz-dur-fast) var(--yz-ease);
+}
+
+.yz-segmented__item:hover {
+  color: var(--yz-ink);
+}
+
+.yz-segmented__item[aria-pressed="true"],
+.yz-segmented__item[aria-selected="true"] {
+  background: var(--yz-ink);
+  color: var(--yz-ground);
+}
+
+/* ── Champs de formulaire (YuZest & Filtres) ── */
+.yz-input {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: var(--yz-radius-control);
+  border: 1px solid var(--yz-rule-subtle);
+  background: var(--yz-surface-elevated);
+  color: var(--yz-ink);
+  font-size: var(--yz-text-base);
+  transition:
+    border-color var(--yz-dur-fast) var(--yz-ease),
+    box-shadow var(--yz-dur-fast) var(--yz-ease);
+}
+
+.yz-input::placeholder {
+  color: var(--yz-ink-faint);
+}
+
+.yz-input:focus {
+  outline: none;
+  border-color: var(--yz-identity);
+  box-shadow: 0 0 0 3px var(--yz-identity-soft);
+}
+
+/* ── Bande de stats tonales sans cage de filets ── */
+.yz-statstrip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 16px 24px;
+}
+
+.yz-stat {
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.yz-stat__value {
+  font-family: var(--yz-font-display);
+  font-size: clamp(1.45rem, 2.5vw, 2.1rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.yz-stat__value--identity {
+  color: var(--yz-identity);
+}
+
+.yz-stat__value--secondary {
+  color: var(--yz-secondary);
+}
+
+.yz-stat__value--signal {
+  color: var(--yz-signal);
+}
+
+/* ── Barlist (classements FM, surface hover sans bordures répétées) ── */
+.yz-barlist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.yz-barlist__row {
+  display: grid;
+  grid-template-columns: 28px minmax(110px, 1fr) minmax(80px, 1.4fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 10px;
+  border-radius: var(--yz-radius-control);
+  transition: background-color var(--yz-dur-fast) var(--yz-ease);
+}
+
+.yz-barlist__row:hover {
+  background: var(--yz-surface-hover);
+}
+
+.yz-barlist__track {
+  height: 8px;
+  background: var(--yz-surface-sunken);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.yz-barlist__fill {
+  height: 100%;
+  background: var(--yz-identity);
+  border-radius: 2px;
+  transition: width 420ms var(--yz-ease);
+}
+
+.yz-barlist__row:first-child .yz-barlist__fill {
+  background: var(--yz-accent);
+}
+
+/* ── Flash optique de confirmation (YuZest) ── */
+@keyframes yz-optical-flash {
+  0% {
+    background: var(--yz-accent);
+    color: var(--yz-accent-ink);
+    border-color: var(--yz-accent);
+  }
+  100% {
+    background: var(--yz-surface-raised);
+    color: var(--yz-ink);
+    border-color: var(--yz-identity);
+  }
+}
+
+.yz-flash-confirm {
+  animation: yz-optical-flash 650ms var(--yz-ease) forwards;
+}
+
+/* ── Toast flottant ── */
+.yz-toast {
+  position: fixed;
+  right: var(--yz-edge);
+  bottom: 24px;
+  z-index: 120;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: var(--yz-radius-control);
+  background: var(--yz-inverse-ground);
+  color: var(--yz-inverse-ink);
+  font-family: var(--yz-font-sans);
+  font-size: var(--yz-text-xs);
+  font-weight: 500;
+  box-shadow: var(--yz-shadow-float);
+}
+
+@media (max-width: 640px) {
+  .yz-barlist__row {
+    grid-template-columns: 24px 1fr auto;
+  }
+  .yz-barlist__track {
+    display: none;
+  }
+}

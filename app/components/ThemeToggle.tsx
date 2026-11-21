@@ -1,46 +1,41 @@
 import { useEffect, useState } from "react";
+import { FilmSwitch } from "~/design-system/core/FilmSwitch";
+import type { FilmMode } from "~/design-system/tokens";
+import { FILM_STORAGE_KEY } from "~/lib/i18n";
 
 export function ThemeToggle({ inline = false }: { inline?: boolean }) {
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [film, setFilm] = useState<FilmMode>("negative");
 
   useEffect(() => {
     const current =
-      document.documentElement.getAttribute("data-theme") === "light"
-        ? "light"
-        : "dark";
-    if (current === "light") {
-      setTheme("light");
-      document.documentElement.setAttribute("data-theme", "light");
-      document
-        .querySelector('meta[name="theme-color"]')
-        ?.setAttribute("content", "#f3f6ea");
-    } else {
-      setTheme("dark");
-      document.documentElement.setAttribute("data-theme", "dark");
-      document
-        .querySelector('meta[name="theme-color"]')
-        ?.setAttribute("content", "#131c17");
-    }
+      document.documentElement.getAttribute("data-film") === "positive"
+        ? "positive"
+        : "negative";
+    setFilm(current);
   }, []);
 
-  function toggle() {
-    const next = theme === "dark" ? "light" : "dark";
-    setTheme(next);
-    document.documentElement.setAttribute("data-theme", next);
-    document
-      .querySelector('meta[name="theme-color"]')
-      ?.setAttribute("content", next === "dark" ? "#131c17" : "#f3f6ea");
-    localStorage.setItem("theme", next);
+  function handleFilmChange(next: FilmMode) {
+    setFilm(next);
+    document.documentElement.setAttribute("data-film", next);
+    document.documentElement.setAttribute(
+      "data-theme",
+      next === "positive" ? "light" : "dark",
+    );
+    try {
+      localStorage.setItem(FILM_STORAGE_KEY, next);
+      localStorage.setItem("theme", next === "positive" ? "light" : "dark");
+    } catch {
+      // ignore
+    }
+  }
+
+  if (inline) {
+    return <FilmSwitch film={film} onChange={handleFilmChange} />;
   }
 
   return (
-    <button
-      className={inline ? "ag-toggle" : "ag-toggle admin-theme-fixed"}
-      onClick={toggle}
-      aria-label={theme === "dark" ? "Passer en thème clair" : "Passer en thème sombre"}
-      aria-pressed={theme === "dark"}
-    >
-      <span aria-hidden="true">{theme === "dark" ? "☀" : "◐"}</span>
-    </button>
+    <div className="admin-theme-fixed">
+      <FilmSwitch film={film} onChange={handleFilmChange} />
+    </div>
   );
 }

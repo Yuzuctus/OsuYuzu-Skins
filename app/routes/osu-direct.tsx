@@ -4,10 +4,14 @@ import { BundleBanner } from "~/components/BundleBanner";
 import { ThemeToggle } from "~/components/ThemeToggle";
 import { getAdmin, cleanExpiredSessions } from "~/lib/db.server";
 import { requireAdminSession } from "~/lib/security.server";
+import agBaseUrl from "~/styles/agrume/base.css?url";
+import agComponentsUrl from "~/styles/agrume/components.css?url";
 import agAppUrl from "~/styles/agrume/app.css?url";
 import adminUrl from "~/styles/admin.css?url";
 
 export const links: Route.LinksFunction = () => [
+  { rel: "stylesheet", href: agBaseUrl },
+  { rel: "stylesheet", href: agComponentsUrl },
   { rel: "stylesheet", href: agAppUrl },
   { rel: "stylesheet", href: adminUrl },
 ];

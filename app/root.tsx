@@ -8,41 +8,49 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
-// Agrume v3 core, copied verbatim from the kit (see README, "Design").
-import agFontsUrl from "~/styles/agrume/fonts.css?url";
-import agTokensUrl from "~/styles/agrume/tokens.css?url";
-import agBaseUrl from "~/styles/agrume/base.css?url";
-import agComponentsUrl from "~/styles/agrume/components.css?url";
+import yzTokensUrl from "~/design-system/tokens/tokens.css?url";
+import yzBaseUrl from "~/design-system/core/base.css?url";
+import yzComponentsUrl from "~/design-system/core/components.css?url";
 import rootStylesUrl from "~/styles/root.css?url";
 
 export const links: Route.LinksFunction = () => [
   { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
   { rel: "apple-touch-icon", href: "/favicon.svg" },
   { rel: "manifest", href: "/manifest.json" },
-  { rel: "stylesheet", href: agFontsUrl },
-  { rel: "stylesheet", href: agTokensUrl },
-  { rel: "stylesheet", href: agBaseUrl },
-  { rel: "stylesheet", href: agComponentsUrl },
+  { rel: "preconnect", href: "https://fonts.googleapis.com" },
+  {
+    rel: "preconnect",
+    href: "https://fonts.gstatic.com",
+    crossOrigin: "anonymous",
+  },
+  {
+    rel: "stylesheet",
+    href: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&family=Martian+Mono:wght@400;500;600&display=swap",
+  },
+  { rel: "stylesheet", href: yzTokensUrl },
+  { rel: "stylesheet", href: yzBaseUrl },
+  { rel: "stylesheet", href: yzComponentsUrl },
   { rel: "stylesheet", href: rootStylesUrl },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" data-theme="dark">
+    <html lang="fr" data-film="negative" data-theme="dark">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#131c17" />
+        <meta name="color-scheme" content="dark light" />
+        <meta name="theme-color" content="#0b0f0e" />
         <meta
           name="google-site-verification"
           content="TaES03KbkWLutAmQcc_QLwMWPLjYTguUHQoTviS0PAQ"
         />
         <Meta />
         <Links />
-        {/* Anti-FOUC: apply saved theme before paint */}
+        {/* Anti-FOUC: apply saved film mode (negative / positive) and language before paint */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){var t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";try{var s=localStorage.getItem("theme");if(s==="light"||s==="dark")t=s}catch(e){}document.documentElement.setAttribute("data-theme",t);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",t==="dark"?"#131c17":"#f3f6ea");if(history.scrollRestoration)history.scrollRestoration="manual";window.scrollTo(0,0)})()`,
+            __html: `(function(){var f="negative";try{var s=localStorage.getItem("yuzuctus-film");if(s==="positive"||s==="negative"){f=s}else{var lt=localStorage.getItem("theme");if(lt==="light")f="positive";else if(lt==="dark")f="negative"}var lg=localStorage.getItem("yuzuctus-language");if(lg==="fr"||lg==="en")document.documentElement.lang=lg}catch(e){}document.documentElement.setAttribute("data-film",f);document.documentElement.setAttribute("data-theme",f==="positive"?"light":"dark");var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",f==="negative"?"#0b0f0e":"#f5eee0")})()`,
           }}
         />
       </head>
@@ -76,12 +84,12 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="ag-container root-error">
-      <p className="ag-kicker">Osu!Yuzu</p>
-      <h1 className="ag-hero__title">{message}</h1>
-      <p className="ag-hero__lead">{details}</p>
-      <div className="ag-hero__actions">
-        <a className="ag-action ag-action--text" href="/">
+    <main className="yz-container root-error">
+      <p className="yz-mono root-error__kicker">OSU!YUZU · SKINS</p>
+      <h1 className="yz-display root-error__title">{message}</h1>
+      <p className="root-error__lead">{details}</p>
+      <div className="root-error__actions">
+        <a className="yz-btn yz-btn--solid" href="/">
           <span>Retour à la collection</span>
         </a>
       </div>

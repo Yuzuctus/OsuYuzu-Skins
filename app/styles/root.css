@@ -1,17 +1,110 @@
-/* Site-local: the root error page. Everything else comes from the Agrume kit. */
+/*
+ * root.css — Page d'erreur globale + pont de tokens --ag-* → --yz-* pour le panel /osu-direct
+ */
+
+:root {
+  --ag-paper: var(--yz-ground);
+  --ag-surface: var(--yz-surface);
+  --ag-surface-sunken: var(--yz-surface-sunken);
+  --ag-surface-raised: var(--yz-surface-raised);
+  --ag-ink: var(--yz-ink);
+  --ag-muted: var(--yz-ink-muted);
+  --ag-faint: var(--yz-ink-faint);
+  --ag-rule: var(--yz-rule);
+  --ag-rule-strong: var(--yz-rule-strong);
+  --ag-identity: var(--yz-identity);
+  --ag-accent: var(--yz-accent);
+  --ag-accent-ink: var(--yz-accent-ink);
+  --ag-gold: var(--yz-accent-text);
+  --ag-rose: var(--yz-signal);
+  --ag-focus: var(--yz-focus);
+  --ag-danger: var(--yz-signal);
+  --ag-on-inverse: var(--yz-ground);
+  --ag-shadow-overlay: var(--yz-shadow-float);
+
+  --ag-font-sans: var(--yz-font-sans);
+  --ag-font-title: var(--yz-font-display);
+  --ag-font-mono: var(--yz-font-mono);
+
+  --ag-text-2xs: var(--yz-text-2xs);
+  --ag-text-xs: var(--yz-text-xs);
+  --ag-text-sm: var(--yz-text-sm);
+  --ag-text-md: var(--yz-text-base);
+  --ag-text-base: var(--yz-text-base);
+  --ag-text-lg: var(--yz-text-lg);
+  --ag-text-xl: var(--yz-text-xl);
+  --ag-text-2xl: var(--yz-text-2xl);
+  --ag-text-3xl: var(--yz-text-3xl);
+  --ag-title-lg: clamp(1.75rem, 3vw, 2.5rem);
+  --ag-title-xl: clamp(2.4rem, 5vw, 4.2rem);
+  --ag-title-hero: var(--yz-text-hero);
+
+  --ag-space-1: 4px;
+  --ag-space-2: 8px;
+  --ag-space-3: 12px;
+  --ag-space-4: 16px;
+  --ag-space-5: 20px;
+  --ag-space-6: 24px;
+  --ag-space-7: 32px;
+  --ag-space-8: 40px;
+  --ag-space-9: 48px;
+  --ag-space-10: 64px;
+  --ag-space-11: 96px;
+
+  --ag-border-hair: 1px;
+  --ag-border-rule: 2px;
+  --ag-border-mark: 3px;
+  --ag-radius-art: 0px;
+  --ag-radius-person: 50%;
+  --ag-radius-round: 999px;
+  --ag-ease: var(--yz-ease);
+  --ag-dur-fast: var(--yz-dur-fast);
+  --ag-dur: var(--yz-dur);
+  --ag-dur-slow: var(--yz-dur-slow);
+  --ag-container: 84rem;
+  --ag-edge: var(--yz-edge);
+  --ag-control-h: 36px;
+  --ag-target: 44px;
+}
+
 .root-error {
   display: flex;
   min-height: 100svh;
   flex-direction: column;
   justify-content: center;
-  padding-block: var(--ag-space-10);
+  gap: 16px;
+  padding-block: var(--yz-space-8);
 }
+
+.root-error__kicker {
+  margin: 0;
+  font-size: var(--yz-text-xs);
+  color: var(--yz-identity);
+  letter-spacing: 0.08em;
+}
+
+.root-error__title {
+  margin: 0;
+  font-size: clamp(3rem, 7vw, 5.5rem);
+}
+
+.root-error__lead {
+  margin: 0;
+  font-size: var(--yz-text-lg);
+  color: var(--yz-ink-muted);
+  max-width: 48ch;
+}
+
+.root-error__actions {
+  margin-top: 12px;
+}
+
 .root-error__stack {
   max-width: 100%;
-  margin-top: var(--ag-space-7);
+  margin-top: var(--yz-space-6);
   overflow-x: auto;
-  border-top: var(--ag-border-rule) solid var(--ag-ink);
-  padding: var(--ag-space-4) 0;
-  color: var(--ag-muted);
-  font: 500 var(--ag-text-xs) / 1.5 var(--ag-font-mono);
+  border-top: 2px solid var(--yz-rule-strong);
+  padding: var(--yz-space-4) 0;
+  color: var(--yz-ink-muted);
+  font: 500 var(--yz-text-xs) / 1.5 var(--yz-font-mono);
 }

@@ -1,84 +1,109 @@
 import { useEffect, useState } from "react";
+import { FilmSwitch } from "~/design-system/core/FilmSwitch";
+import type { FilmMode } from "~/design-system/tokens";
+import { COPY, type Lang } from "~/lib/i18n";
 
-export function YzThemeToggle() {
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
-
-  useEffect(() => {
-    const next =
-      document.documentElement.getAttribute("data-theme") === "light"
-        ? "light"
-        : "dark";
-    setTheme(next);
-    document.documentElement.setAttribute("data-theme", next);
-    document
-      .querySelector('meta[name="theme-color"]')
-      ?.setAttribute("content", next === "dark" ? "#131c17" : "#f3f6ea");
-  }, []);
-
-  function toggle() {
-    const next = theme === "dark" ? "light" : "dark";
-    setTheme(next);
-    document.documentElement.setAttribute("data-theme", next);
-    document
-      .querySelector('meta[name="theme-color"]')
-      ?.setAttribute("content", next === "dark" ? "#131c17" : "#f3f6ea");
-    localStorage.setItem("theme", next);
-  }
-
-  return (
-    <button
-      className="ag-toggle"
-      onClick={toggle}
-      aria-pressed={theme === "dark"}
-      aria-label={theme === "dark" ? "Passer en thème clair" : "Passer en thème sombre"}
-    >
-      {theme === "dark" ? "Clair" : "Sombre"}
-    </button>
-  );
+interface SiteNavProps {
+  film: FilmMode;
+  onFilmChange: (next: FilmMode) => void;
+  lang: Lang;
+  onLangChange: (next: Lang) => void;
+  activeSection: "featured" | "collection" | "colophon";
 }
 
-export function SiteNav() {
-  const [currentSection, setCurrentSection] = useState<"collection" | "footer">("collection");
+export function SiteNav({
+  film,
+  onFilmChange,
+  lang,
+  onLangChange,
+  activeSection,
+}: SiteNavProps) {
+  const [scrolled, setScrolled] = useState(false);
+  const t = COPY[lang];
 
   useEffect(() => {
-    const footer = document.getElementById("footer");
-    if (!footer) return;
-
-    const updateCurrentSection = () => {
-      setCurrentSection(
-        footer.getBoundingClientRect().top <= window.innerHeight * 0.6
-          ? "footer"
-          : "collection",
-      );
+    const onScroll = () => {
+      setScrolled(window.scrollY > 24);
     };
-
-    updateCurrentSection();
-    window.addEventListener("scroll", updateCurrentSection, { passive: true });
-    window.addEventListener("resize", updateCurrentSection);
-    return () => {
-      window.removeEventListener("scroll", updateCurrentSection);
-      window.removeEventListener("resize", updateCurrentSection);
-    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
-    <header className="ag-site-header">
-      <div className="ag-container ag-site-header__inner">
-        <a className="ag-wordmark" href="#top" aria-label="Osu!Yuzu — haut de page">
-          Osu!<span className="ag-wordmark__accent">Yuzu</span>
+    <header className={`yz-topbar ${scrolled ? "is-scrolled" : ""}`}>
+      <div className="yz-container yz-topbar__inner">
+        <a
+          className="yz-wordmark"
+          href="#top"
+          aria-label="Osu!Yuzu — haut de page"
+        >
+          Osu!<span className="yz-wordmark__accent">Yuzu.</span>
         </a>
-        <nav className="ag-site-header__nav" aria-label="Navigation">
-          <a href="#collection" aria-current={currentSection === "collection" ? "location" : undefined}>
-            Collection
+
+        <nav className="yz-nav" aria-label={t.nav.ariaMain}>
+          <a
+            href="#featured"
+            aria-current={activeSection === "featured" ? "location" : undefined}
+          >
+            {t.nav.mainSkin}
           </a>
-          <a href="#footer" aria-current={currentSection === "footer" ? "location" : undefined}>
-            Me trouver
+          <a
+            href="#collection"
+            aria-current={
+              activeSection === "collection" ? "location" : undefined
+            }
+          >
+            {t.nav.collection}
           </a>
-          <a href="https://yuzuctus.fr/">
-            yuzuctus.fr
+          <a
+            href="#colophon"
+            aria-current={activeSection === "colophon" ? "location" : undefined}
+          >
+            {t.nav.resources}
           </a>
+          <a href="https://yuzuctus.fr/">{t.nav.mainSite} ↗</a>
         </nav>
-        <div className="ag-site-header__controls"><YzThemeToggle /></div>
+
+        <div className="yz-topbar__controls">
+          <div
+            className="yz-lang-switch"
+            role="group"
+            aria-label={t.nav.langAria}
+          >
+            <button
+              type="button"
+              className={`yz-lang-switch__btn ${lang === "fr" ? "is-active" : ""}`}
+              onClick={() => onLangChange("fr")}
+              aria-pressed={lang === "fr"}
+            >
+              FR
+            </button>
+            <span className="yz-lang-switch__sep" aria-hidden="true">
+              /
+            </span>
+            <button
+              type="button"
+              className={`yz-lang-switch__btn ${lang === "en" ? "is-active" : ""}`}
+              onClick={() => onLangChange("en")}
+              aria-pressed={lang === "en"}
+            >
+              EN
+            </button>
+          </div>
+
+          <FilmSwitch
+            film={film}
+            onChange={onFilmChange}
+            labels={{
+              positive: t.film.positive,
+              negative: t.film.negative,
+              toNegativeAria: t.film.toNegativeAria,
+              toPositiveAria: t.film.toPositiveAria,
+              title: t.film.title,
+            }}
+          />
+        </div>
       </div>
     </header>
   );

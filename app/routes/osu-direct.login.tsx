@@ -5,10 +5,14 @@ import { verifyPassword, verifyTOTP } from "~/lib/auth.server";
 import { getSessionId, createSessionCookie } from "~/lib/session.server";
 import { assertSameOrigin } from "~/lib/security.server";
 import { ThemeToggle } from "~/components/ThemeToggle";
+import agBaseUrl from "~/styles/agrume/base.css?url";
+import agComponentsUrl from "~/styles/agrume/components.css?url";
 import agAppUrl from "~/styles/agrume/app.css?url";
 import adminUrl from "~/styles/admin.css?url";
 
 export const links: Route.LinksFunction = () => [
+  { rel: "stylesheet", href: agBaseUrl },
+  { rel: "stylesheet", href: agComponentsUrl },
   { rel: "stylesheet", href: agAppUrl },
   { rel: "stylesheet", href: adminUrl },
 ];
